@@ -2,8 +2,20 @@ import numpy as np
 from init import examine
 from feature import extract
 from matplotlib import pyplot as plt
+import argparse
 
-imagePath = './Orion_1.jpg'
+parser = argparse.ArgumentParser(description='''
+Process the input image to detect features that can be used for aligning it with a 
+second one when it is desired to stack them on top of each other.
+''', epilog='''estare is a Persian word for star.''')
+
+parser.add_argument('image', action='store', type=str)
+parser.add_argument('kapa', action='store', type=float)
+args=parser.parse_args()
+
+imagePath = args.image
+threshold = args.kapa
+
 img_as_array, x_range, y_range = examine(imagePath, verbose=False, graphics=False)
 imgGray  = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
 
@@ -28,7 +40,8 @@ for x in x_pair:
 
         numFeatures, indices, markers = extract( imgGray,
                                                  xRng=[int(x[0]), int(x[1])],
-                                                 yRng=[int(y[0]), int(y[1])], kapa=0.95 )
+                                                 yRng=[int(y[0]), int(y[1])],
+                                                 kapa=threshold )
         
         imgGray[ int(x[0]):int(x[1]), int(y[0]):int(y[1]) ] = markers[:, :]
         
