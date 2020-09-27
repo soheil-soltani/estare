@@ -16,40 +16,47 @@ args=parser.parse_args()
 imagePath = args.image
 threshold = args.kapa
 
-img_as_array, x_range, y_range = examine(imagePath, verbose=False, graphics=False)
+img_as_array, x_range, y_range = examine(imagePath, save=True, verbose=False, graphics=False)
+
+print(f'Image has x-range = {x_range}, and y-range = {y_range}')
+
 imgGray  = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
 
-print(f'The input image has x_range = {x_range}, and y_range = {y_range}')
-
-
-x_factor = x_range // 30
-y_factor = y_range // 30
-
-discret_x = np.linspace(0, x_range, x_factor)
-discret_y = np.linspace(0, y_range, y_factor)
-
-x_pair = list(zip(discret_x[0:-1], discret_x[1:]))
-y_pair = list(zip(discret_y[0:-1], discret_y[1:]))
-
 fig2,(left, right) = plt.subplots(1,2)
-left.imshow(imgGray)
-left.set_title('Raw image', fontsize=14)
+left.imshow(imgGray, cmap='gray')
+left.set_title('Raw input image', fontsize=14)
 
-for x in x_pair:
-    for y in y_pair:
-
-        numFeatures, indices, markers = extract( imgGray,
-                                                 xRng=[int(x[0]), int(x[1])],
-                                                 yRng=[int(y[0]), int(y[1])],
-                                                 kapa=threshold )
-        
-        imgGray[ int(x[0]):int(x[1]), int(y[0]):int(y[1]) ] = markers[:, :]
-        
-
-right.imshow(imgGray)
+image_features = right.imshow(imgGray, cmap='gray')
 right.set_title('Marked features', fontsize=14)
+
+
+numFeatures, indices, markers = extract( imgGray, xRng=[0, x_range], yRng=[0, y_range],
+                                         kapa=threshold )
+
+print(f'Total number of features detected: {numFeatures}')
+
+# Loop over features and ask the user if a feature is of interest to be saved
+keepFeature = False
+selectedFeatures = 0 #counter
+#TODO: add a feature to use matplotlib.ginput
+if numFeatures > 0:
+    print('Press any key to save the current feature, or click the mouse to discard it...')
+    for pair_0, pair_1 in zip(indices[0], indices[1]):
+        if pair_0 > 3 and pair_1 > 3:
+            imgGray[pair_0-4:pair_0+4, pair_1-4:pair_1+4] = 0
+            image_features.set_data(imgGray)
+            image_features.autoscale()
+            plt.draw()  #, plt.pause(0.01)
+            btnpress = plt.waitforbuttonpress(-1) 
+            if btnpress:                
+                selectedFeatures += 1
+                np.save('./data/feature_{}'.format(selectedFeatures), indices)
+                plt.waitforbuttonpress(0.1)
+
+            #right.annotate('O', xy = (pair_1, pair_0), arrowprops=dict(arrowstyle='->'))               
+
+print('Feature detection completed.')
 plt.show()
-        
-# now continue tiling up the image in intervals of 30 x 30 pixels
+
 
 

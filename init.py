@@ -6,7 +6,7 @@ from skimage import img_as_float as imfloat
 from skimage import filters
 
 
-def examine( imagePath, verbose=False, graphics=False ):
+def examine( imagePath, save=False, verbose=False, graphics=False ):
     image = imfloat( io.imread( imagePath ) )
 
     if verbose:
@@ -18,24 +18,39 @@ def examine( imagePath, verbose=False, graphics=False ):
         print('Image shape: ', image.shape)
 
     if graphics:
-        gridShow = 'off'
+        gridShow = False
         fig, ax1 = plt.subplots(1,1)
 
         # TODO: can we expand imagePath and loop over if it has more than 1 path?
-        ax1.imshow(image_1)
-        ax1.set_title('Orion_1', fontsize=14)
-        #ax1.axis('off')
+        ax1.imshow(image, cmap='gray')
+        ax1.set_title('Input image', fontsize=14)
         ax1.grid(gridShow)
         plt.show()
 
     # save the image
-    np.save('image', image)
+    if save:
+        np.save('./data/input_image', image)
 
     # return the x, and y ranges
-    x_max = image.shape[0]
-    y_max = image.shape[1]
+    x_max = image.shape[1]
+    y_max = image.shape[0]
 
     return image, x_max, y_max
+
+if __name__ == '__main__':
+    image, x_range, y_range = examine('./tests/test.jpg', save=False, verbose=True, graphics=False)
+    print(f'Image has x-range = {x_range}, and y-range = {y_range}')
+    
+    imgGray  = image @ [0.2126, 0.7152, 0.0722]  # image in grayscale
+
+    gridShow = False
+    fig, ax1 = plt.subplots(1,1)
+
+    ax1.imshow(imgGray, cmap='gray')
+    ax1.set_title('Test image', fontsize=14)
+    ax1.grid(gridShow)
+    plt.show()
+        
     
  
     
