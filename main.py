@@ -22,13 +22,9 @@ print(f'Image has x-range = {x_range}, and y-range = {y_range}')
 
 imgGray  = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
 
-fig2,(left, right) = plt.subplots(1,2)
-left.imshow(imgGray, cmap='gray')
-left.set_title('Raw input image', fontsize=14)
-
-image_features = right.imshow(imgGray, cmap='gray')
-right.set_title('Marked features', fontsize=14)
-
+fig2, frame = plt.subplots(1,1)
+image_features = frame.imshow(imgGray, cmap='gray')
+frame.set_title('Marked features', fontsize=14)
 
 numFeatures, indices, markers = extract( imgGray, xRng=[0, x_range], yRng=[0, y_range],
                                          kapa=threshold )
