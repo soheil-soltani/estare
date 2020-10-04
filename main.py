@@ -1,6 +1,8 @@
 import numpy as np
 from init import examine
 from feature import extract
+import align
+
 from matplotlib import pyplot as plt
 import argparse
 
@@ -11,10 +13,13 @@ second one when it is desired to stack them on top of each other.
 
 parser.add_argument('image', action='store', type=str)
 parser.add_argument('kapa', action='store', type=float)
+parser.add_argument('--stack', action='store_true')
 args=parser.parse_args()
 
 imagePath = args.image
 threshold = args.kapa
+if args.stack:
+    align.align()
 
 img_as_array, x_range, y_range = examine(imagePath, save=True, verbose=False, graphics=False)
 
