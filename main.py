@@ -46,7 +46,7 @@ if numFeatures > 0:
             btnpress = plt.waitforbuttonpress(-1) 
             if btnpress:                
                 selectedFeatures += 1
-                np.save('./data/feature_{}'.format(selectedFeatures), indices)
+                np.save('./data/feature_{}'.format(selectedFeatures), [pair_0, pair_1])
                 plt.waitforbuttonpress(0.1)
 
             #right.annotate('O', xy = (pair_1, pair_0), arrowprops=dict(arrowstyle='->'))               
