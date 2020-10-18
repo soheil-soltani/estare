@@ -1,2 +1,4 @@
 .idea/
 anaconda*
+src/__pycache__/
+data/*.npy
