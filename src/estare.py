@@ -62,23 +62,25 @@ if args.Mode == 'scan':
     # Loop over features and ask the user if a feature is of interest to be saved
     keepFeature = False
     selectedFeatures = 0  # counter
+    refusedFeatures = 0  # counter
     # TODO: add a feature to use matplotlib.ginput
     if numFeatures > 0:
         print('''A detected feature is displayed by a black square. Press any key to save the current feature, or click 
                 the mouse to discard it...''')
         for pair_0, pair_1 in zip(indices[0], indices[1]):
             if pair_0 > 3 and pair_1 > 3:
-                imgGray[pair_0-4:pair_0+4, pair_1-4:pair_1+4] = 0
-                image_features.set_data(imgGray)
-                image_features.autoscale()
-                frame.annotate('O', xy=(pair_1, pair_0), arrowprops=dict(arrowstyle='->'))
+                arrow = frame.annotate('O', xy=(pair_1, pair_0), arrowprops=dict(arrowstyle='->'))
                 plt.draw()  # , plt.pause(0.01)
                 btnpress = plt.waitforbuttonpress(-1)
                 if btnpress:
                     selectedFeatures += 1
-                    np.save('../data/feature_{}'.format(selectedFeatures), [pair_0, pair_1])
+                    np.save('../data/features/feature_{}'.format(selectedFeatures), [pair_0, pair_1])
                     # TODO: Find install path and cd to data
                     plt.waitforbuttonpress(0.1)
+                else:
+                    refusedFeatures += 1
+                    np.save('../data/refuse/refused_{}'.format(refusedFeatures), [pair_0, pair_1])
+                arrow.remove()   # removing the arrow must be the last thing to do at the end of the if-block
 
     print('Feature detection completed.')
     plt.show()
