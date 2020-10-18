@@ -35,7 +35,7 @@ parse_stack.add_argument('feature_2', help='''Path and name of a .npy file conta
                             layer.''')
 parse_stack.set_defaults(Mode='stack')
 
-args=parser.parse_args()
+args = parser.parse_args()
 
 if args.Mode == 'scan':
     imagePath = args.image
@@ -45,14 +45,14 @@ if args.Mode == 'scan':
 
     print(f'Image has x-range = {x_range}, and y-range = {y_range}')
 
-    imgGray  = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
+    imgGray = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
 
-    fig2, frame = plt.subplots(1,1)
+    fig2, frame = plt.subplots(1, 1)
     image_features = frame.imshow(imgGray, cmap='gray')
     frame.set_title('Marked features', fontsize=14)
 
-    numFeatures, indices, markers = extract( imgGray, xRng=[0, x_range], yRng=[0, y_range],
-                                             kapa=threshold )
+    numFeatures, indices, markers = extract(imgGray, xRng=[0, x_range], yRng=[0, y_range],
+                                            kapa=threshold)
 
     print(f'''
         Total number of features detected: {numFeatures}. If this is too many, consider increasing  
@@ -62,25 +62,26 @@ if args.Mode == 'scan':
     # Loop over features and ask the user if a feature is of interest to be saved
     keepFeature = False
     selectedFeatures = 0  # counter
-    #TODO: add a feature to use matplotlib.ginput
+    # TODO: add a feature to use matplotlib.ginput
     if numFeatures > 0:
-        print('The currently detected feature is displayed Press any key to save the current feature, or click the mouse to discard it...')
+        print('''A detected feature is displayed by a black square. Press any key to save the current feature, or click 
+                the mouse to discard it...''')
         for pair_0, pair_1 in zip(indices[0], indices[1]):
             if pair_0 > 3 and pair_1 > 3:
                 imgGray[pair_0-4:pair_0+4, pair_1-4:pair_1+4] = 0
                 image_features.set_data(imgGray)
                 image_features.autoscale()
-                plt.draw()  #, plt.pause(0.01)
+                frame.annotate('O', xy=(pair_1, pair_0), arrowprops=dict(arrowstyle='->'))
+                plt.draw()  # , plt.pause(0.01)
                 btnpress = plt.waitforbuttonpress(-1)
                 if btnpress:
                     selectedFeatures += 1
-                    np.save('./data/feature_{}'.format(selectedFeatures), [pair_0, pair_1])
+                    np.save('../data/feature_{}'.format(selectedFeatures), [pair_0, pair_1])
+                    # TODO: Find install path and cd to data
                     plt.waitforbuttonpress(0.1)
 
-                #right.annotate('O', xy = (pair_1, pair_0), arrowprops=dict(arrowstyle='->'))
-
-    # print('Feature detection completed.')
-    # plt.show()
+    print('Feature detection completed.')
+    plt.show()
 
 elif args.Mode == 'stack':
     img_1 = args.layer_1
