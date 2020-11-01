@@ -5,6 +5,9 @@ from align import *
 
 from matplotlib import pyplot as plt
 import argparse
+import os
+from skimage.io import imsave
+
 
 parser = argparse.ArgumentParser(prog='estare', description='''Program for aligning and stacking astro photos.''',
                                  epilog='''estare is a Persian word for star.''')
@@ -61,8 +64,44 @@ if args.Mode == 'scan':
 
     # Loop over features and ask the user if a feature is of interest to be saved
     keepFeature = False
+
+    xy_FeatureCount = 0   # number of already-saved feature coordinates initialized to zero
+    binFeatureCount = 0   # number of already-saves feature images in binary format initialized to zero
+    imgFeatureCount = 0   # number of already-saves feature images in .png format initialized to zero
+
+    xy_RefusedCount = 0   # number of already-saved refused coordinates initialized to zero
+    binRefusedCount = 0   # number of already-saves refused images in binary format initialized to zero
+    imgRefusedCount = 0   # number of already-saves refused images in .png format initialized to zero  
+
+    for files in os.listdir('../data/features'):
+        if files.endswith('.png'):
+            imgFeatureCount += 1
+
+    for files in os.listdir('../data/features/pixels'):
+        if files.endswith('.npy'):
+            binFeatureCount += 1
+
+    for files in os.listdir('../data/features/coordinates'):
+        if files.endswith('.npy'):
+            xy_FeatureCount += 1
+
+
+    for files in os.listdir('../data/refuse'):
+        if files.endswith('.png'):
+            imgRefusedCount += 1
+
+    for files in os.listdir('../data/refuse/pixels'):
+        if files.endswith('.npy'):
+            binRefusedCount += 1
+
+    for files in os.listdir('../data/refuse/coordinates'):
+        if files.endswith('.npy'):
+            xy_RefusedCount += 1    
+            
     selectedFeatures = 0  # counter
     refusedFeatures = 0  # counter
+    
+    
     # TODO: add a feature to use matplotlib.ginput
     if numFeatures > 0:
         print('''A detected feature is displayed by a black square. Press any key to save the current feature, or click 
@@ -74,12 +113,22 @@ if args.Mode == 'scan':
                 btnpress = plt.waitforbuttonpress(-1)
                 if btnpress:
                     selectedFeatures += 1
-                    np.save('../data/features/feature_{}'.format(selectedFeatures), [pair_0, pair_1])
+                    np.save('../data/features/coordinates/feature_{}'.format(xy_FeatureCount), [pair_0, pair_1])
+                    xy_FeatureCount += 1
+                    np.save('../data/features/pixels/feature_{}_pixels'.format(binFeatureCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
+                    binFeatureCount += 1
+                    imsave('../data/features/feature_{}_pixels.png'.format(imgFeatureCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
+                    imgFeatureCount += 1
                     # TODO: Find install path and cd to data
                     plt.waitforbuttonpress(0.1)
                 else:
                     refusedFeatures += 1
-                    np.save('../data/refuse/refused_{}'.format(refusedFeatures), [pair_0, pair_1])
+                    np.save('../data/refuse/coordinates/refused_{}'.format(xy_RefusedCount), [pair_0, pair_1])
+                    xy_RefusedCount += 1
+                    np.save('../data/refuse/pixels/refused_{}_pixels'.format(binRefusedCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
+                    binRefusedCount += 1
+                    imsave('../data/refuse/refused_{}_pixels.png'.format(imgRefusedCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
+                    imgRefusedCount += 1
                 arrow.remove()   # removing the arrow must be the last thing to do at the end of the if-block
 
     print('Feature detection completed.')
