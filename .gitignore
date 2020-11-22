@@ -2,3 +2,4 @@
 anaconda*
 estare/src/__pycache__/
 estare/data/*.npy
+data/
