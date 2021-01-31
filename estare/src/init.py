@@ -31,13 +31,16 @@ def examine(imagePath, save=False, verbose=False, graphics=False):
         np.save(f'{work_dir}/data/input_image', image)   # TODO: Find the installation path; then cd to data/
 
     # return the x, and y ranges
-    x_max = image.shape[1]
-    y_max = image.shape[0]
+    x_max = image.shape[0]
+    y_max = image.shape[1]
 
     return image, x_max, y_max
 
 
 if __name__ == '__main__':
+
+    #TODO:++++++++++++ This test is broken; ./tests/test.jpg does NOT exist ++++++++++++++++++++++
+    xs
     image, x_range, y_range = examine('./tests/test.jpg', save=False, verbose=True, graphics=False)
     print(f'Image has x-range = {x_range}, and y-range = {y_range}')
     
