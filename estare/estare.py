@@ -2,9 +2,13 @@
 
 def main():
     import numpy as np
-    from estare.src.init import examine
-    from estare.src.feature import extract
-    from estare.src.align import align
+    #from estare.src.init import examine
+    #from estare.src.feature import extract
+    #from estare.src.align import align
+    
+    from src.init import examine
+    from src.feature import extract
+    from src.align import align
 
     from matplotlib import pyplot as plt
     import argparse
@@ -165,11 +169,16 @@ def main():
         plt.show()
 
     elif args.Mode == 'stack':
+
+        # unpack the arguments
         img_1 = args.layer_1
         img_2 = args.layer_2
         pivot_1 = args.feature_1
         pivot_2 = args.feature_2
 
+        # align and stack the two input frames
         align(img_1, img_2, pivot_1, pivot_2)
 
 
+if __name__ == '__main__':
+    main()
