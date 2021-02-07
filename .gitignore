@@ -3,3 +3,13 @@ anaconda*
 estare/src/__pycache__/
 estare/data/*.npy
 data/
+estare/jupyter_notebooks/*
+
+build/
+*dist*		
+estare.egg-info
+*.lprof
+estare/__pycache__
+estare/*.lprof
+estare/*.prof
+estare/src/__init__.py
