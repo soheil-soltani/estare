@@ -6,12 +6,39 @@ from matplotlib import pyplot as plt
 from src.init import examine
 from src.rotate import rotate
 
+# +++++++++++++
+# For profiling
+import time
+
 
 # Fine-tuning
 # - pick features from scattered regions
 # - characterize error: does it vary if one goes towards the edges or far from the origin?
 # - compare light curves and make adjustments if the stacked feature deviates too much
 
+
+@profile
+def detrans(x_array, y_array, x_range, y_range, del_x, del_y):
+
+    '''
+Corrects the effect of translation by removing the extent by which each point 
+had been shifted, i.e. del_x, and del_y.
+'''
+    # for i in range(x_range):
+    #     for j in range(y_range):
+    #         x_array[i, j] = i-del_x
+    #         y_array[i, j] = j-del_y
+
+    for i in range(x_range):
+        x_array[i, :] = i-del_x
+
+    for j in range(y_range):
+        y_array[:, j] = j-del_y
+            
+
+    return x_array, y_array
+
+#@profile
 def align(image_1, image_2, pivot_1, pivot_2):
   
     img_1, x_range_1, y_range_1 = examine(image_1)  
@@ -61,11 +88,11 @@ def align(image_1, image_2, pivot_1, pivot_2):
 
     # For the two following time-consuming loops, we need unit tests to ensure the correctness after each optimization:
     # Now we can detranslate all points
-    for i in range(x_range_1):
-        for j in range(y_range_1):
-            x_array[i, j] = i-del_x
-            y_array[i, j] = j-del_y
-    
+    t_1 = time.time()
+
+    x_array, y_array = detrans(x_array, y_array, x_range_1, y_range_1, del_x, del_y)
+            
+    t_2 = time.time()
     # and now we can derotate them 
     for i in range(x_range_1):
         for j in range(y_range_1):
@@ -78,13 +105,34 @@ def align(image_1, image_2, pivot_1, pivot_2):
             # stack
             if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
                 img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
+            
+    t_3 = time.time()
 
-    #io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked.JPG', img_1)
+    print('De-translation took %s sec.'%(t_2-t_1))
+    print('Stacking took %s sec.'%(t_3-t_2))
+    print('Done')
+    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked.JPG', img_1)
 
     # # recons = imread('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/DSC00281_aligned.JPG')
 
 
 
+if __name__ == '__main__':
+
+    x_range = 400; y_range = 600
+    
+    x_array = np.zeros((x_range, y_range, 1), dtype=float)
+    y_array = np.zeros((x_range, y_range, 1), dtype=float)
+
+    del_x = 0.1; del_y = 0.2
+    
+    t_1 = time.time()
+    for t in range(10):
+        x_array, y_array = detrans(x_array, y_array, x_range, y_range, del_x, del_y)
+            
+    t_2 = time.time()
+
+    print('De-translation took %s sec.'%(t_2-t_1))
 
 
     
