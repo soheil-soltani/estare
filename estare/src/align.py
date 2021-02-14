@@ -3,8 +3,8 @@ from skimage import img_as_float as imfloat
 import numpy as np
 from matplotlib import pyplot as plt
 
-from init import examine
-from rotate import rotate
+from src.init import examine
+from src.rotate import rotate
 
 # +++++++++++++
 # For profiling
@@ -142,22 +142,31 @@ def align(image_1, image_2, pivot_1, pivot_2):
     # and now we can derotate them 
     for i in range(x_range_1):
         for j in range(y_range_1):
-            uncorrected_coor = [x_array[i, j], y_array[i, j]]
+            #uncorrected_coor = [x_array[i, j], y_array[i, j]]
+            uncorrected_coor = [i-del_x, j-del_y]
+            
             corrected_coor = rotate(uncorrected_coor, -theta, discrete=True)
             
-            x_array[i, j] = corrected_coor[0]
-            y_array[i, j] = corrected_coor[1]
+            #x_array[i, j] = corrected_coor[0]
+            #y_array[i, j] = corrected_coor[1]
+            
+            x_corrected = corrected_coor[0]
+            y_corrected = corrected_coor[1]
 
             # stack +needs unittesting if the stacking algorithm is to be changed+
-            if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
-                img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
+            #if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
+            #    img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
+                
+            if x_corrected > 0 and x_corrected < x_range_1 and y_corrected > 0 and y_corrected < y_range_1:
+                img_1[x_corrected, y_corrected] += img_2[i, j]   # Broadcasting to all three channels is implicit
+                
             
     t_3 = time.time()
 
     print('De-translation took %s sec.'%(t_2-t_1))
     print('Stacking took %s sec.'%(t_3-t_2))
     print('Done')
-    #io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked.JPG', img_1)
+    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_efficient.JPG', img_1)
 
 
 
