@@ -3,8 +3,8 @@ from skimage import img_as_float as imfloat
 import numpy as np
 from matplotlib import pyplot as plt
 
-from estare.src.init import examine
-from estare.src.rotate import rotate
+from init import examine
+from rotate import rotate
 
 # +++++++++++++
 # For profiling
@@ -103,8 +103,6 @@ def derotate(x_array, y_array, theta, roundup=False):
 
     x_range_1 = np.shape(x_array)[0]
     y_range_1 = np.shape(x_array)[1]
-
-    print(x_range_1, y_range_1)
     
     for i in range(x_range_1):
         for j in range(y_range_1):
@@ -150,7 +148,7 @@ def align(image_1, image_2, pivot_1, pivot_2):
             x_array[i, j] = corrected_coor[0]
             y_array[i, j] = corrected_coor[1]
 
-            # stack
+            # stack +needs unittesting if the stacking algorithm is to be changed+
             if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
                 img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
             
