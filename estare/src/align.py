@@ -97,19 +97,37 @@ def find_offset(pivot_1, pivot_2):
 
 
 
+def derotate(x_array, y_array, theta, roundup=False):
+    """Removes the effect of rotation
+    """
+
+    x_range_1 = np.shape(x_array)[0]
+    y_range_1 = np.shape(x_array)[1]
+    
+    for i in range(x_range_1):
+        for j in range(y_range_1):
+            uncorrected_coor = [x_array[i, j], y_array[i, j]]
+            corrected_coor = rotate(uncorrected_coor, -theta, discrete=roundup)
+            
+            x_array[i, j] = corrected_coor[0]
+            y_array[i, j] = corrected_coor[1]
+
+    return x_array, y_array
+
+                
 def align(image_1, image_2, pivot_1, pivot_2):
   
     img_1, x_range_1, y_range_1 = examine(image_1)  
     img_2, x_range_2, y_range_2 = examine(image_2)
 
-    # TODO: How to raise error here?
+ 
     # if (x_range_1 != x_range_2) or (y_range_1 != y_range_2):
     #     #TODO: raise error and exit
-    #     pass   # JUST FOR NOW!
+
 
     # calculate offsets (del_x, del_y) and rotation angle theta
     del_x, del_y, theta, theta_rad = find_offset(pivot_1, pivot_2)
-    
+    print(del_x, del_y, theta, theta_rad)
     # Allocate x- and y-array for holding the new coordinates after offseting
     x_array = np.zeros((x_range_1, y_range_1, 1), dtype=int)
     y_array = np.zeros((x_range_1, y_range_1, 1), dtype=int)
@@ -124,22 +142,31 @@ def align(image_1, image_2, pivot_1, pivot_2):
     # and now we can derotate them 
     for i in range(x_range_1):
         for j in range(y_range_1):
-            uncorrected_coor = [x_array[i, j], y_array[i, j]]
+            #uncorrected_coor = [x_array[i, j], y_array[i, j]]
+            uncorrected_coor = [i-del_x, j-del_y]
+            
             corrected_coor = rotate(uncorrected_coor, -theta, discrete=True)
             
-            x_array[i, j] = corrected_coor[0]
-            y_array[i, j] = corrected_coor[1]
+            #x_array[i, j] = corrected_coor[0]
+            #y_array[i, j] = corrected_coor[1]
+            
+            x_corrected = corrected_coor[0]
+            y_corrected = corrected_coor[1]
 
-            # stack
-            if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
-                img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
+            # stack +needs unittesting if the stacking algorithm is to be changed+
+            #if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
+            #    img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
+                
+            if x_corrected > 0 and x_corrected < x_range_1 and y_corrected > 0 and y_corrected < y_range_1:
+                img_1[x_corrected, y_corrected] += img_2[i, j]   # Broadcasting to all three channels is implicit
+                
             
     t_3 = time.time()
 
     print('De-translation took %s sec.'%(t_2-t_1))
     print('Stacking took %s sec.'%(t_3-t_2))
     print('Done')
-    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked.JPG', img_1)
+    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_efficient.JPG', img_1)
 
 
 
