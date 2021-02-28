@@ -1,6 +1,7 @@
 
 import numpy as np
 
+from src import calculate
 
 
 '''
@@ -21,24 +22,40 @@ X
 
 '''
 
+# @profile
+# def arc(position, origo=np.array([0., 0.]), radians=False):
+#     '''
+# Returns the angle between the input coordinate and the vertical axis Y
+# '''
+#     rho = np.sqrt( (position[0]-origo[0])**2 + (position[1]-origo[1])**2 )
+#     angle = np.arccos( (position[0]-origo[0]) / rho )
+    
+#     if radians==False:
+#         angle = angle*180.0/np.pi
+        
+#     return angle
 
+
+#@profile
 def arc(position, origo=np.array([0., 0.]), radians=False):
     '''
 Returns the angle between the input coordinate and the vertical axis Y
-'''
-    rho = np.sqrt( (position[0]-origo[0])**2 + (position[1]-origo[1])**2 )
-    angle = np.arccos( (position[0]-origo[0]) / rho )
-    
+'''    
     if radians==False:
-        angle = angle*180.0/np.pi
-        
-    return angle
+        return 180.0 * (np.arccos( (position[0]-origo[0]) / np.sqrt( (position[0]-origo[0])**2 + (position[1]-origo[1])**2 ) )) / np.pi
+    else:
+        return np.arccos( (position[0]-origo[0]) / np.sqrt( (position[0]-origo[0])**2 + (position[1]-origo[1])**2 ) )
 
 
 
 # apply rotation
+#@profile
 def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=True):
-    theta = angle + arc(position, radians=radians)
+    #theta = angle + arc(position, radians=radians)
+
+    # Use the compiled version of arc():
+    theta = angle + calculate.get_angle(position, radians=radians)
+
     if radians==False:
         theta = theta*(np.pi/180.0)   # convert degree to radians
 
@@ -51,6 +68,8 @@ def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=Tr
         return np.array( [int(rotated_position[0]), int(rotated_position[1])] )
     else:
         return np.array( [x, y] )
+
+
 
 
 
