@@ -3,8 +3,8 @@ from skimage import img_as_float as imfloat
 import numpy as np
 from matplotlib import pyplot as plt
 
-from src.init import examine
-from src.rotate import rotate
+from estare.src.init import examine
+from estare.src.rotate import rotate
 
 # +++++++++++++
 # For profiling

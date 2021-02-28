@@ -38,9 +38,13 @@ X
 
 #@profile
 def arc(position, origo=np.array([0., 0.]), radians=False):
-    '''
-Returns the angle between the input coordinate and the vertical axis Y
-'''    
+    """Returns the angle between the input coordinate and the vertical 
+       axis Y using the projection principle
+    """
+
+    #TODO: position[0,0] or generally position=origin should raise error
+    # in fact division by rho = 0 should raise error
+    
     if radians==False:
         return 180.0 * (np.arccos( (position[0]-origo[0]) / np.sqrt( (position[0]-origo[0])**2 + (position[1]-origo[1])**2 ) )) / np.pi
     else:
@@ -51,13 +55,15 @@ Returns the angle between the input coordinate and the vertical axis Y
 # apply rotation
 #@profile
 def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=True):
+    #TODO: position [0,0] cannot be rotated
+    
     #theta = angle + arc(position, radians=radians)
 
     # Use the compiled version of arc():
     theta = angle + calculate.get_angle(position, radians=radians)
 
     if radians==False:
-        theta = theta*(np.pi/180.0)   # convert degree to radians
+        theta = theta*(np.pi/180.0)   
 
     rho = np.sqrt((position[0]-origo[0])**2 + (position[1]-origo[1])**2)
     x = rho*np.cos(theta)
