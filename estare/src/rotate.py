@@ -1,7 +1,7 @@
 
 import numpy as np
 
-import calculate
+#import calculate
 
 
 '''
@@ -57,10 +57,10 @@ def arc(position, origo=np.array([0., 0.]), radians=False):
 def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=True):
     #TODO: position [0,0] cannot be rotated
     
-    #theta = angle + arc(position, radians=radians)
+    theta = angle + arc(position, radians=radians)
 
     # Use the compiled version of arc():
-    theta = angle + calculate.get_angle(position, radians=radians)
+    #theta = angle + calculate.get_angle(position, radians=radians)
 
     if radians==False:
         theta = theta*(np.pi/180.0)   
