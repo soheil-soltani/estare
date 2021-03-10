@@ -3,8 +3,8 @@ from skimage import img_as_float as imfloat
 import numpy as np
 from matplotlib import pyplot as plt
 
-from estare.src.init import examine
-from estare.src.rotate import rotate
+from init import examine
+from rotate import rotate
 
 # +++++++++++++
 # For profiling
@@ -120,14 +120,13 @@ def align(image_1, image_2, pivot_1, pivot_2):
     img_1, x_range_1, y_range_1 = examine(image_1)  
     img_2, x_range_2, y_range_2 = examine(image_2)
 
- 
     # if (x_range_1 != x_range_2) or (y_range_1 != y_range_2):
     #     #TODO: raise error and exit
 
 
     # calculate offsets (del_x, del_y) and rotation angle theta
     del_x, del_y, theta, theta_rad = find_offset(pivot_1, pivot_2)
-    print(del_x, del_y, theta, theta_rad)
+    
     # Allocate x- and y-array for holding the new coordinates after offseting
     x_array = np.zeros((x_range_1, y_range_1, 1), dtype=int)
     y_array = np.zeros((x_range_1, y_range_1, 1), dtype=int)
@@ -166,7 +165,11 @@ def align(image_1, image_2, pivot_1, pivot_2):
     print('De-translation took %s sec.'%(t_2-t_1))
     print('Stacking took %s sec.'%(t_3-t_2))
     print('Done')
-    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_efficient.JPG', img_1)
+
+    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_testAlign.jpg', img_1)
+    
+    return img_1
+    
 
 
 

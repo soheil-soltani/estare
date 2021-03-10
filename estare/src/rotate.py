@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from src import calculate
+import calculate
 
 
 '''
