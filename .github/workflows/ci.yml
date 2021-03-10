@@ -7,7 +7,7 @@ on:
   push:
     branches: [ tonne ]
   pull_request:
-    branches: [ master_pre_stage ]
+    branches: [ tonne ]
 
 jobs:
   build:
