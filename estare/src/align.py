@@ -166,7 +166,7 @@ def align(image_1, image_2, pivot_1, pivot_2):
     print('Stacking took %s sec.'%(t_3-t_2))
     print('Done')
 
-    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_testAlign.jpg', img_1)
+    #io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_testAlign.jpg', img_1)
     
     return img_1
     
