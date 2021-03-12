@@ -6,7 +6,7 @@ def main():
     #from estare.src.feature import extract
     #from estare.src.align import align
     
-    from src.init import examine
+    from src.init import examine, setup
     from src.feature import extract
     from src.align import align
 
@@ -47,21 +47,11 @@ def main():
 
     args = parser.parse_args()
 
+    # Perform the initial setup
+    setup()
+    
     if args.Mode == 'scan':
-        # prepare the data directory structure for the program
-        try:
-            os.mkdir('./data')
-            os.mkdir('./data/features')
-            os.mkdir('./data/refuse')
         
-            os.mkdir('./data/features/coordinates')
-            os.mkdir('./data/features/pixels')
-
-            os.mkdir('./data/refuse/coordinates')        
-            os.mkdir('./data/refuse/pixels')                
-        except OSError:
-            print('Failed to create data directories. This may be due to the lack of write permission.')
-
         # handle input arguments
         imagePath = args.image
         threshold = args.kapa
@@ -177,7 +167,7 @@ def main():
         pivot_2 = args.feature_2
 
         # align and stack the two input frames
-        align(img_1, img_2, pivot_1, pivot_2)
+        align(img_1, img_2, pivot_1, pivot_2, save=False)
 
 
 if __name__ == '__main__':

@@ -3,8 +3,8 @@ from skimage import img_as_float as imfloat
 import numpy as np
 from matplotlib import pyplot as plt
 
-from init import examine
-from rotate import rotate
+from src.init import examine
+from src.rotate import rotate
 
 # +++++++++++++
 # For profiling
@@ -115,7 +115,7 @@ def derotate(x_array, y_array, theta, roundup=False):
     return x_array, y_array
 
                 
-def align(image_1, image_2, pivot_1, pivot_2):
+def align(image_1, image_2, pivot_1, pivot_2, save=False):
   
     img_1, x_range_1, y_range_1 = examine(image_1)  
     img_2, x_range_2, y_range_2 = examine(image_2)
@@ -166,7 +166,8 @@ def align(image_1, image_2, pivot_1, pivot_2):
     print('Stacking took %s sec.'%(t_3-t_2))
     print('Done')
 
-    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_testAlign.jpg', img_1)
+    if save:
+        io.imsave('./data/estare_stacked_testAlign.jpg', img_1)
     
     return img_1
     
