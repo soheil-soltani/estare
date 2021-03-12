@@ -2,7 +2,7 @@ import setuptools
 
 from distutils import core
 from distutils.extension import Extension
-from Cython.Distutils import build_ext
+#from Cython.Distutils import build_ext
 
 
 
@@ -11,10 +11,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="estare", 
-    version="0.0.2",
+    version="0.0.3",
     author="Soheil Soltani",
     author_email="soheil@netc.eu",
-    description="Package for stacking astrophoto images",
+    description="Package for automated image alignment and stacking",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/soheil-soltani/estare",
@@ -27,12 +27,12 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     entry_points = {
-        'console_scripts' : ['estare = estare.estare:main']
+        'console_scripts' : ['estare = estare.__main__.py:main']
     }
 )
 
-core.setup(
-    cmdclass = {'build_ext' : build_ext},
-    ext_modules = [Extension("calculate", ["estare/src/arc.pyx"])]
-    )
+#core.setup(
+#    cmdclass = {'build_ext' : build_ext},
+#    ext_modules = [Extension("calculate", ["estare/src/arc.pyx"])]
+#    )
 
