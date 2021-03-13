@@ -28,7 +28,7 @@ def examine(imagePath, save=False, verbose=False, graphics=False):
     # save the image
     if save:
         work_dir = os.getcwd()   # Current working directory
-        np.save(f'{work_dir}/data/input_image', image)   # TODO: Find the installation path; then cd to data/
+        np.save(f'{work_dir}/data/input_image', image)   # TODO:data/ should be created by init.setup() needs test?
 
     # return the x, and y ranges
     x_max = image.shape[0]
@@ -36,6 +36,23 @@ def examine(imagePath, save=False, verbose=False, graphics=False):
 
     return image, x_max, y_max
 
+
+def setup():
+    # prepare the data directory structure for the program
+    try:
+        #TODO: for more clarity, name the base dir. estare_data instead of just data
+        os.mkdir('./data')
+        os.mkdir('./data/features')
+        os.mkdir('./data/refuse')
+        
+        os.mkdir('./data/features/coordinates')
+        os.mkdir('./data/features/pixels')
+
+        os.mkdir('./data/refuse/coordinates')        
+        os.mkdir('./data/refuse/pixels')                
+    except OSError:
+        print('Failed to create data directories. This may be due to the lack of write permission.')
+            
 
 if __name__ == '__main__':
 
