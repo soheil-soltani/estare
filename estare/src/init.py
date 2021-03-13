@@ -40,6 +40,7 @@ def examine(imagePath, save=False, verbose=False, graphics=False):
 def setup():
     # prepare the data directory structure for the program
     try:
+        #TODO: for more clarity, name the base dir. estare_data instead of just data
         os.mkdir('./data')
         os.mkdir('./data/features')
         os.mkdir('./data/refuse')
