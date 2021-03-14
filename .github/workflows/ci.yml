@@ -25,8 +25,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest numpy scikit-image
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        ls $GITHUB_WORKSPACE
+        
+        #change to the tests directory
         cd $GITHUB_WORKSPACE/tests
+        # prepare the directory structure
+        if [ ! -d test_images ]; then mkdir test_images; fi
+        if [ ! -d test_results ]; then mkdir test_results; fi
+        
+        # Run the tests
         python3 -m unittest test_align.py
         #- name: Lint with flake8
     #  run: |
