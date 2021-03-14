@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 
 from estare.src.init import examine
 from estare.src.rotate import rotate
-
+from estare.src.stack import stack
 # +++++++++++++
 # For profiling
 import time
@@ -136,32 +136,12 @@ def align(image_1, image_2, pivot_1, pivot_2, save=False):
     t_1 = time.time()
 
     x_array, y_array = detrans(x_array, y_array, x_range_1, y_range_1, del_x, del_y)
-            
+
     t_2 = time.time()
     # and now we can derotate them 
-    for i in range(x_range_1):
-        for j in range(y_range_1):
-            #uncorrected_coor = [x_array[i, j], y_array[i, j]]
-            uncorrected_coor = [i-del_x, j-del_y]
-            
-            corrected_coor = rotate(uncorrected_coor, -theta, discrete=True)
-            
-            #x_array[i, j] = corrected_coor[0]
-            #y_array[i, j] = corrected_coor[1]
-            
-            x_corrected = corrected_coor[0]
-            y_corrected = corrected_coor[1]
-
-            # stack +needs unittesting if the stacking algorithm is to be changed+
-            #if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
-            #    img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
-                
-            if x_corrected > 0 and x_corrected < x_range_1 and y_corrected > 0 and y_corrected < y_range_1:
-                img_1[x_corrected, y_corrected] += img_2[i, j]   # Broadcasting to all three channels is implicit
-                
-            
+    stack(img_1, img_2, x_range_1, y_range_1, del_x, del_y, theta, discrete=True)
     t_3 = time.time()
-
+    
     print('De-translation took %s sec.'%(t_2-t_1))
     print('Stacking took %s sec.'%(t_3-t_2))
     print('Done')
