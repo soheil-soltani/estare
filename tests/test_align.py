@@ -14,26 +14,26 @@ class TestAlign(unittest.TestCase):
         from tests.reference_markers import reference_markers
         
         targets, markers = reference_markers()
-        np.save('./test_images/pivot.npy', targets)
-        np.save('./test_images/target.npy', markers)
+        np.save('./tests/test_images/pivot.npy', targets)
+        np.save('./tests/test_images/target.npy', markers)
 
 
     @classmethod
     def tearDownClass(self):
         import os
 
-        for garbage_file in os.listdir('./test_images'):
-            os.remove(f'./test_images/{garbage_file}')
+        for garbage_file in os.listdir('./tests/test_images'):
+            os.remove(f'./tests/test_images/{garbage_file}')
             
-        for garbage_file in os.listdir('./test_results'):
-            os.remove(f'./test_results/{garbage_file}')            
+        for garbage_file in os.listdir('./tests/test_results'):
+            os.remove(f'./tests/test_results/{garbage_file}')            
 
 
         
     def test_offset(self):        
         
-        del_x, del_y, theta, theta_rad = align.find_offset('./test_images/pivot.npy',
-                                                           './test_images/target.npy')
+        del_x, del_y, theta, theta_rad = align.find_offset('./tests/test_images/pivot.npy',
+                                                           './tests/test_images/target.npy')
 
         self.assertAlmostEqual(del_x, 26.74381464587602,
                                msg="Offset in the x-dir. is wrong.")
@@ -74,8 +74,8 @@ class TestAlign(unittest.TestCase):
         
     def test_derotate(self):
               
-        del_x, del_y, theta, theta_rad = align.find_offset('./test_images/pivot.npy',
-                                                           './test_images/target.npy')
+        del_x, del_y, theta, theta_rad = align.find_offset('./tests/test_images/pivot.npy',
+                                                           './tests/test_images/target.npy')
         
         test_size=4
         
@@ -114,7 +114,7 @@ class TestAlign(unittest.TestCase):
         position_4 = np.array( [123, 56] ).T
 
         # save two marker points for later stacking
-        np.save('./test_results/target.npy', [position_1, position_2])
+        np.save('./tests/test_results/target.npy', [position_1, position_2])
         
         # mark the selected pixels in the original frame
         frame_0[position_1[0]-5:position_1[0]+5, position_1[1]-5:position_1[1]+5] = 1
@@ -123,7 +123,7 @@ class TestAlign(unittest.TestCase):
         frame_0[position_4[0]-5:position_4[0]+5, position_4[1]-5:position_4[1]+5] = 1
 
         # save the base layer
-        imsave('./test_results/orig.jpeg', frame_0)
+        imsave('./tests/test_results/orig.jpeg', frame_0)
         
         # Now translate the rotated points
         transH = 15
@@ -145,7 +145,7 @@ class TestAlign(unittest.TestCase):
         pos3_rot_tra = align.rotate(pos3_tra, 20)
         pos4_rot_tra = align.rotate(pos4_tra, 20)
 
-        np.save('./test_results/pivot.npy', [pos1_rot_tra, pos2_rot_tra])
+        np.save('./tests/test_results/pivot.npy', [pos1_rot_tra, pos2_rot_tra])
 
         np.testing.assert_almost_equal(pos1_rot_tra, [164, 177])
         np.testing.assert_almost_equal(pos2_rot_tra, [241, 134])
@@ -167,7 +167,7 @@ class TestAlign(unittest.TestCase):
                 pos4_rot_tra[1]-5:pos4_rot_tra[1]+5] = 1
 
         # save the perturbed layer
-        imsave('./test_results/perturbed.jpeg', frame_1)
+        imsave('./tests/test_results/perturbed.jpeg', frame_1)
         
         # pick two of the rotated and translated points to back calculate the angle of rot.
         slope_bef = (position_2[1]-position_1[1]) / (position_2[0]-position_1[0])
@@ -221,7 +221,7 @@ class TestAlign(unittest.TestCase):
         frame_3[pos3_derot[0]-5:pos3_derot[0]+5, pos3_derot[1]-5:pos3_derot[1]+5] = 0.5
         frame_3[pos4_derot[0]-5:pos4_derot[0]+5, pos4_derot[1]-5:pos4_derot[1]+5] = 0.5
 
-        stacked_image = align.align('./test_results/orig.jpeg', './test_results/perturbed.jpeg', './test_results/target.npy', './test_results/pivot.npy')
+        stacked_image = align.align('./tests/test_results/orig.jpeg', './tests/test_results/perturbed.jpeg', './tests/test_results/target.npy', './tests/test_results/pivot.npy')
         #control = imread('../tests/stacked.jpeg')
         
         mis_align = np.linalg.norm(stacked_image - frame_0)
