@@ -36,4 +36,3 @@ jobs:
         # Run the tests
 
         python3 -m unittest tests/test_align.py
-        
