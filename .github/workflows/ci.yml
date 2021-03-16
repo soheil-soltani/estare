@@ -34,5 +34,6 @@ jobs:
         if [ ! -d test_results ]; then mkdir test_results; fi
         cd ..        
         # Run the tests
+
         python3 -m unittest tests/test_align.py
         
