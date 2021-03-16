@@ -1,20 +1,18 @@
+import numpy as np
+from estare.src.init import examine, setup
+from estare.src.feature import extract
+from estare.src.align import align
+    
+#from src.init import examine, setup
+#from src.feature import extract
+#from src.align import align
 
+from matplotlib import pyplot as plt
+import argparse
+import os
+from skimage.io import imsave
 
 def main():
-    import numpy as np
-    #from estare.src.init import examine
-    #from estare.src.feature import extract
-    #from estare.src.align import align
-    
-    from src.init import examine
-    from src.feature import extract
-    from src.align import align
-
-    from matplotlib import pyplot as plt
-    import argparse
-    import os
-    from skimage.io import imsave
-
     
     parser = argparse.ArgumentParser(prog='estare', description='''Program for aligning and stacking astro photos.''',
                                      epilog='''estare is a Persian word for star.''')
@@ -47,21 +45,11 @@ def main():
 
     args = parser.parse_args()
 
+    # Perform the initial setup
+    setup()
+    
     if args.Mode == 'scan':
-        # prepare the data directory structure for the program
-        try:
-            os.mkdir('./data')
-            os.mkdir('./data/features')
-            os.mkdir('./data/refuse')
         
-            os.mkdir('./data/features/coordinates')
-            os.mkdir('./data/features/pixels')
-
-            os.mkdir('./data/refuse/coordinates')        
-            os.mkdir('./data/refuse/pixels')                
-        except OSError:
-            print('Failed to create data directories. This may be due to the lack of write permission.')
-
         # handle input arguments
         imagePath = args.image
         threshold = args.kapa
@@ -142,7 +130,7 @@ def main():
             the mouse to discard it...''')
             for pair_0, pair_1 in zip(indices[0], indices[1]):
                 if pair_0 > 3 and pair_1 > 3:
-                    arrow = frame.annotate('O', xy=(pair_1, pair_0), arrowprops=dict(arrowstyle='->'))
+                    arrow = frame.annotate('O', xy=(pair_1, pair_0), arrowprops=dict(color='lime',arrowstyle='->'))
                     plt.draw()  # , plt.pause(0.01)
                     btnpress = plt.waitforbuttonpress(-1)
                     if btnpress:
@@ -177,7 +165,7 @@ def main():
         pivot_2 = args.feature_2
 
         # align and stack the two input frames
-        align(img_1, img_2, pivot_1, pivot_2)
+        stacked_frame = align(img_1, img_2, pivot_1, pivot_2, save=True)
 
 
 if __name__ == '__main__':

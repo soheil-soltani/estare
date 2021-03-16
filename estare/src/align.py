@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 
 from estare.src.init import examine
 from estare.src.rotate import rotate
-
+from estare.src.stack import stack
 # +++++++++++++
 # For profiling
 import time
@@ -115,19 +115,18 @@ def derotate(x_array, y_array, theta, roundup=False):
     return x_array, y_array
 
                 
-def align(image_1, image_2, pivot_1, pivot_2):
+def align(image_1, image_2, pivot_1, pivot_2, save=False):
   
     img_1, x_range_1, y_range_1 = examine(image_1)  
     img_2, x_range_2, y_range_2 = examine(image_2)
 
- 
     # if (x_range_1 != x_range_2) or (y_range_1 != y_range_2):
     #     #TODO: raise error and exit
 
 
     # calculate offsets (del_x, del_y) and rotation angle theta
     del_x, del_y, theta, theta_rad = find_offset(pivot_1, pivot_2)
-    print(del_x, del_y, theta, theta_rad)
+    
     # Allocate x- and y-array for holding the new coordinates after offseting
     x_array = np.zeros((x_range_1, y_range_1, 1), dtype=int)
     y_array = np.zeros((x_range_1, y_range_1, 1), dtype=int)
@@ -137,36 +136,21 @@ def align(image_1, image_2, pivot_1, pivot_2):
     t_1 = time.time()
 
     x_array, y_array = detrans(x_array, y_array, x_range_1, y_range_1, del_x, del_y)
-            
+
     t_2 = time.time()
     # and now we can derotate them 
-    for i in range(x_range_1):
-        for j in range(y_range_1):
-            #uncorrected_coor = [x_array[i, j], y_array[i, j]]
-            uncorrected_coor = [i-del_x, j-del_y]
-            
-            corrected_coor = rotate(uncorrected_coor, -theta, discrete=True)
-            
-            #x_array[i, j] = corrected_coor[0]
-            #y_array[i, j] = corrected_coor[1]
-            
-            x_corrected = corrected_coor[0]
-            y_corrected = corrected_coor[1]
-
-            # stack +needs unittesting if the stacking algorithm is to be changed+
-            #if x_array[i, j] > 0 and x_array[i, j] < x_range_1 and y_array[i, j] > 0 and y_array[i, j] < y_range_1:
-            #    img_1[x_array[i, j], y_array[i, j]] += img_2[i, j]   # Broadcasting to all three channels is implicit
-                
-            if x_corrected > 0 and x_corrected < x_range_1 and y_corrected > 0 and y_corrected < y_range_1:
-                img_1[x_corrected, y_corrected] += img_2[i, j]   # Broadcasting to all three channels is implicit
-                
-            
+    stack(img_1, img_2, x_range_1, y_range_1, del_x, del_y, theta, discrete=True)
     t_3 = time.time()
-
+    
     print('De-translation took %s sec.'%(t_2-t_1))
     print('Stacking took %s sec.'%(t_3-t_2))
     print('Done')
-    io.imsave('/home/minter/workdir/Central_backup/Pictures/Test_images_for_estare_Ramberget_Dec_2020/estare_stacked_efficient.JPG', img_1)
+
+    if save:
+        io.imsave('./data/estare_stacked_testAlign.jpg', img_1)
+    
+    return img_1
+    
 
 
 
