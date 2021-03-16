@@ -22,10 +22,10 @@ class TestAlign(unittest.TestCase):
     def tearDownClass(self):
         import os
 
-        for garbage_file in os.listdir('./test_images'):
+        for garbage_file in os.listdir('./tests/test_images'):
             os.remove(f'./tests/test_images/{garbage_file}')
             
-        for garbage_file in os.listdir('./test_results'):
+        for garbage_file in os.listdir('./tests/test_results'):
             os.remove(f'./tests/test_results/{garbage_file}')            
 
 
