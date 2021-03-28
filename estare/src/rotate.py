@@ -35,7 +35,6 @@ X
         
 #     return angle
 
-
 #@profile
 def arc(position, origo=np.array([0., 0.]), radians=False):
     """Returns the angle between the input coordinate and the vertical 
@@ -44,20 +43,23 @@ def arc(position, origo=np.array([0., 0.]), radians=False):
 
     #TODO: position[0,0] or generally position=origin should raise error
     # in fact division by rho = 0 should raise error
-    
+    position_norm = np.sqrt((position[0]-origo[0])**2 + (position[1]-origo[1])**2)
+    # computing norm via np.linalg.norm(position) is much slower
     if radians==False:
-        return 180.0 * (np.arccos( (position[0]-origo[0]) / np.sqrt( (position[0]-origo[0])**2 + (position[1]-origo[1])**2 ) )) / np.pi
+        return position_norm, 180.0 * (np.arccos( (position[0]-origo[0]) / position_norm )) / np.pi
     else:
-        return np.arccos( (position[0]-origo[0]) / np.sqrt( (position[0]-origo[0])**2 + (position[1]-origo[1])**2 ) )
+        return position_norm, np.arccos( (position[0]-origo[0]) / position_norm )
 
 
-
+    
 # apply rotation
 #@profile
 def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=True):
     #TODO: position [0,0] cannot be rotated
-    
-    theta = angle + arc(position, radians=radians)
+
+    rho, theta = arc(position, radians=radians)
+    theta += angle
+    #theta = angle + arc(position, radians=radians)
 
     # Use the compiled version of arc():
     # theta = angle + calculate.get_angle(position, radians=radians)
@@ -65,7 +67,9 @@ def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=Tr
     if radians==False:
         theta = theta*(np.pi/180.0)   
 
-    rho = np.sqrt((position[0]-origo[0])**2 + (position[1]-origo[1])**2)
+    # rho now comes directly from arc()
+    #rho = np.sqrt((position[0]-origo[0])**2 + (position[1]-origo[1])**2)
+    
     x = rho*np.cos(theta)
     y = rho*np.sin(theta)
 
