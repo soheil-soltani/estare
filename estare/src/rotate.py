@@ -35,7 +35,7 @@ X
         
 #     return angle
 
-@profile
+#@profile
 def arc(position, origo=np.array([0., 0.]), radians=False):
     """Returns the angle between the input coordinate and the vertical 
        axis Y using the projection principle
@@ -53,7 +53,7 @@ def arc(position, origo=np.array([0., 0.]), radians=False):
 
     
 # apply rotation
-@profile
+#@profile
 def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=True):
     #TODO: position [0,0] cannot be rotated
 
