@@ -157,6 +157,9 @@ def align(image_1, image_2, pivot_1, pivot_2, save=False):
 
 if __name__ == '__main__':
 
+    #from estare.src.test_arc_vec import arc
+    import os
+    
     x_range = 400; y_range = 600
     
     x_array = np.zeros((x_range, y_range, 1), dtype=float)
@@ -183,4 +186,28 @@ if __name__ == '__main__':
     print('De-translation (scal. version) took %s sec.'%(t_2-t_1))
 
 
+    #===== testing align() =====
+    pivot_1 = np.array([[0, 0],[1, 1]])
+    pivot_2 = np.array([[1, 1],[0, 0]])
+    np.save('./pivot_1.npy', pivot_1)
+    np.save('./pivot_2.npy', pivot_2)
+    io.imsave('./image_1.jpeg', x_array)
+    io.imsave('./image_2.jpeg', y_array)
+    aligned_img = align('./image_1.jpeg', './image_2.jpeg', './pivot_1.npy', './pivot_2.npy', save=False)
+    os.remove('./image_1.jpeg')
+    os.remove('./image_2.jpeg')
+    os.remove('./pivot_1.npy')
+    os.remove('./pivot_2.npy')
+    
+    #===== testing the new arc() =====
+    # coor_vector = np.zeros(2*x_range*y_range)
+    # for i in range(x_range):
+    #     for j in range(y_range):
+    #         Idx_1 = i*2*y_range + 2*j
+    #         Idx_2 = Idx_1 + 1
+    #         #for z in range(0, x_range*y_range-1, 2):
+    #         coor_vector[Idx_1], coor_vector[Idx_2] = i, j
+        
+    # sqrd_positions = arc(coor_vector, origo=np.array([0., 0.]), radians=False)
+    # print(sqrd_positions)
     
