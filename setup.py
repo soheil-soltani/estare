@@ -11,22 +11,26 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="estare", 
-    version="0.0.9",
-    author="Soheil Soltani",
-    author_email="soheil@netc.eu",
-    description="Package for automated image alignment and stacking",
+    version="0.1.1",
+    author="Soheil Soltani",    
+    description="Package for image alignment and stacking which can be used from the linux command-line",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/soheil-soltani/estare",
-    packages=setuptools.find_packages(),    
+    packages=setuptools.find_packages(exclude="tests",),    
     classifiers=[
         "Programming Language :: Python :: 3",
 	"License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: POSIX :: Linux",
     ],
+    install_requires=[
+        'numpy>=1.19.2',
+        'matplotlib>=3.3.2',
+        'scikit-image>=0.17.2',        
+    ],
     python_requires='>=3.6',
     entry_points = {
-        'console_scripts' : ['estare=estare.estare_main:main']
+        'console_scripts' : ['estare=estare.__main__:main']
     }
 )
 
