@@ -75,25 +75,25 @@ def find_offset(pivot_1, pivot_2):
     
     slope_aft = ( b_2[1] - a_2[1] )/( b_2[0] - a_2[0] )
 
-    theta = ( ((np.arctan(slope_aft))*180/np.pi) -
+    deflection = ( ((np.arctan(slope_aft))*180/np.pi) -
               ( (np.arctan(slope_bef))*180/np.pi ) )
 
-    a2_derot = rotate(a_2, -theta, discrete=False)   # set discrete=False to get an exact value
+    a2_derot = rotate(a_2, -deflection, discrete=False)   # set discrete=False to get an exact value
 
     # compare the derotated one from its origin to calculate the relative translation magnitude 
     dxp = a2_derot[0] - a_1[0]
     dyp = a2_derot[1] - a_1[1]
 
     # Using the formulae, compute the absolute translation magnitude
-    theta_rad = -theta * np.pi / 180   # radians
+    deflection_rad = -deflection * np.pi / 180   # radians
 
-    del_y = ( dyp - dxp*np.tan(theta_rad) ) / \
-            (np.sin(theta_rad)*np.tan(theta_rad) + np.cos(theta_rad))
+    del_y = ( dyp - dxp*np.tan(deflection_rad) ) / \
+            (np.sin(deflection_rad)*np.tan(deflection_rad) + np.cos(deflection_rad))
 
-    del_x = (dxp + del_y*np.sin(theta_rad)) / np.cos(theta_rad)
+    del_x = (dxp + del_y*np.sin(deflection_rad)) / np.cos(deflection_rad)
 
 
-    return del_x, del_y, theta, theta_rad
+    return del_x, del_y, deflection, deflection_rad
 
 
 

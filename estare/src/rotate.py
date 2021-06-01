@@ -54,15 +54,24 @@ def arc(position, origo=np.array([0., 0.]), radians=False):
     
 # apply rotation
 #@profile
-def rotate(position, angle, origo=np.array([0., 0.]), radians=False, discrete=True):
+def rotate(position, deflection, origo=np.array([0., 0.]), radians=False, discrete=True):
+    """
     #TODO: position [0,0] cannot be rotated
+    Change log:
 
+    28/03/2021
+    rho (which stands for 2-norm of the position vector) now comes directly from arc()
+    
+    02/04/2021
+    rho and deflection are pre-stored in a look-up table, which means that they just need to
+    be loaded
+    """
     rho, theta = arc(position, radians=radians)
-    theta += angle
-    #theta = angle + arc(position, radians=radians)
+    theta += deflection
+    #theta = deflection + arc(position, radians=radians)
 
     # Use the compiled version of arc():
-    # theta = angle + calculate.get_angle(position, radians=radians)
+    # theta = deflection + calculate.get_angle(position, radians=radians)
 
     if radians==False:
         theta = theta*(np.pi/180.0)   
