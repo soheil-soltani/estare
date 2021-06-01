@@ -44,4 +44,3 @@ On the other hand, if it is downloaded as a package, it needs to be extracted fi
 
 In either case, use `estare -h` for a complete guide on how to run each mode.
 
- 
