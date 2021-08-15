@@ -21,10 +21,11 @@ such as (a) bright star(s) that can be used for aligning multiple frames.''')
 
 parse_feature.add_argument('image', action='store', type=str,  help='The input image to be scanned.')
 
-# if we have auto-selection for kapa, add that to the help msg. below
 parse_feature.add_argument('-k', '--kapa',  action='store', default=None, type=float, help='''Threshold 
 for picking pixels of a certain brightness. It takes a floating point values from the range [0, 1]. Pick 
-a larger value to limit the detected features to those of a higher brightness.''')
+a larger value to limit the detected features to those of a higher brightness. If not provided, the 
+threshold will be computed automatically.''')
+
 parse_feature.set_defaults(func=scan)
 
 parse_stack = sub_parsers.add_parser('stack', help='''This mode should normally be used after running 
