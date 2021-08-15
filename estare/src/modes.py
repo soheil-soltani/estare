@@ -8,9 +8,12 @@ steps.
 
 from estare.src.align import align
 from estare.src.init import examine, setup
-from estare.src.feature import extract
+
 from matplotlib import pyplot as plt
 from skimage.io import imsave
+
+import estare.scan.cutoff as cutoff 
+import estare.scan.feature as  feature
 
 import os
 import numpy as np
@@ -33,8 +36,7 @@ def scan(args):
     
     # handle input arguments
     imagePath = args.image
-    threshold = args.kapa
-
+            
     img_as_array, x_range, y_range = examine(imagePath, save=True, verbose=False, graphics=False)
     # Replace with:
     # img_as_array = FloatImage(imagePath)
@@ -55,13 +57,18 @@ def scan(args):
     image_features = frame.imshow(imgGray, cmap='gray')
     frame.set_title('Marked features', fontsize=14)
 
-    numFeatures, indices, markers = extract(imgGray, xRng=[0, x_range], yRng=[0, y_range],
+    if args.kapa != None:
+        threshold = args.kapa
+    else:
+        threshold = cutoff.find_threshold(imgGray, x_range, y_range)
+        
+    numFeatures, indices, markers = feature.extract(imgGray, xRng=[0, x_range], yRng=[0, y_range],
                                             kapa=threshold)
     # Replace with:
     # numFeatures, indices, markers = imgGray.extract(xRng=[0, x_range], yRng=[0, y_range], kapa=threshold)
 
     print(f'''
-    Total number of features detected: {numFeatures}. If this is too many, consider increasing  
+    Total number of features detected: {numFeatures} (cutoff brightness = {threshold}). If this is too many, consider increasing  
     the threshold input.
     ''')
 
