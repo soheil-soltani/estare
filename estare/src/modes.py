@@ -1,8 +1,8 @@
-"""This module should be imported by the entry point script.
+"""This module should be imported by the entry-point script.
 
 It implements the functions scan() and assemble(). The former 
 is used for detecting features that are suitable for aligning 
-two images. The latter procceds to the alignment and stacking 
+two images. The latter proceeds to the alignment and stacking 
 steps.
 """
 
@@ -73,7 +73,6 @@ def scan(args):
     ''')
 
     # Loop over features and ask the user if a feature is of interest to be saved
-    keepFeature = False
 
     xy_FeatureCount = 0   # number of already-saved feature coordinates initialized to zero
     binFeatureCount = 0   # number of already-saves feature images in binary format initialized to zero
