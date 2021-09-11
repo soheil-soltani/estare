@@ -37,7 +37,7 @@ def scan(args):
     # handle input arguments
     imagePath = args.image
             
-    img_as_array, x_range, y_range = examine(imagePath, save=True, verbose=False, graphics=False)
+    img_as_array, x_range, y_range = examine(imagePath, verbose=False, graphics=False)
     # Replace with:
     # img_as_array = FloatImage(imagePath)
     # img_as_array.print_info()

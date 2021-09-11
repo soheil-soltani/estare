@@ -5,7 +5,7 @@ from skimage import img_as_float as imfloat
 import os
 
 
-def examine(imagePath, save=False, verbose=False, graphics=False):
+def examine(imagePath, verbose=False, graphics=False):
     image = imfloat(io.imread(imagePath))
 
     if verbose:
@@ -24,11 +24,6 @@ def examine(imagePath, save=False, verbose=False, graphics=False):
         ax1.set_title('Input image', fontsize=14)
         ax1.grid(gridShow)
         plt.show()
-
-    # save the image
-    if save:
-        work_dir = os.getcwd()   # Current working directory
-        np.save(f'{work_dir}/data/input_image', image)   # TODO:data/ should be created by init.setup() needs test?
 
     # return the x, and y ranges
     x_max = image.shape[0]
