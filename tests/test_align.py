@@ -223,7 +223,7 @@ class TestAlign(unittest.TestCase):
 
         stacked_image = align.align('./tests/test_results/orig.jpeg', './tests/test_results/perturbed.jpeg', './tests/test_results/target.npy', './tests/test_results/pivot.npy')
         #control = imread('../tests/stacked.jpeg')
-        
+
         mis_align = np.linalg.norm(stacked_image - frame_0)
         #TODO: this test is problematic. Goodness of alignment changes with the algorithm
-        self.assertAlmostEqual(mis_align, 21.421162557285534)
+        self.assertLessEqual(np.abs(mis_align - 21.421162557285534), 1.0) 
