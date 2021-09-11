@@ -1,6 +1,6 @@
 
 import numpy as np
-from estare.src.rotate import rotate
+from estare.src.rotate import rotate_vectorized
 
 
 def stack(img_1, img_2, x_array, y_array, x_range, y_range, deflection, discrete=True):
@@ -12,7 +12,7 @@ def stack(img_1, img_2, x_array, y_array, x_range, y_range, deflection, discrete
     ###rho = norm_matrix[i, j]
     ###theta = angle_matrix[i, j]
     
-    x_corrected, y_corrected = rotate(x_array, y_array, -deflection, origo=np.array([0., 0.]), radians=False, discrete=discrete)
+    x_corrected, y_corrected = rotate_vectorized(x_array, y_array, -deflection, origo=np.array([0., 0.]), radians=False, discrete=discrete)
     
     for i in range(x_range):
         for j in range(y_range):
