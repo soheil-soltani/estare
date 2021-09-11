@@ -1,16 +1,19 @@
-"""This module should be imported by the entry point script.
+"""This module should be imported by the entry-point script.
 
 It implements the functions scan() and assemble(). The former 
 is used for detecting features that are suitable for aligning 
-two images. The latter procceds to the alignment and stacking 
+two images. The latter proceeds to the alignment and stacking 
 steps.
 """
 
 from estare.src.align import align
 from estare.src.init import examine, setup
-from estare.src.feature import extract
+
 from matplotlib import pyplot as plt
 from skimage.io import imsave
+
+import estare.scan.cutoff as cutoff 
+import estare.scan.feature as  feature
 
 import os
 import numpy as np
@@ -33,8 +36,7 @@ def scan(args):
     
     # handle input arguments
     imagePath = args.image
-    threshold = args.kapa
-
+            
     img_as_array, x_range, y_range = examine(imagePath, save=True, verbose=False, graphics=False)
     # Replace with:
     # img_as_array = FloatImage(imagePath)
@@ -55,55 +57,25 @@ def scan(args):
     image_features = frame.imshow(imgGray, cmap='gray')
     frame.set_title('Marked features', fontsize=14)
 
-    numFeatures, indices, markers = extract(imgGray, xRng=[0, x_range], yRng=[0, y_range],
+    if args.kapa != None:
+        threshold = args.kapa
+    else:
+        threshold = cutoff.find_threshold(imgGray, x_range, y_range)
+        
+    numFeatures, indices, markers = feature.extract(imgGray, xRng=[0, x_range], yRng=[0, y_range],
                                             kapa=threshold)
     # Replace with:
     # numFeatures, indices, markers = imgGray.extract(xRng=[0, x_range], yRng=[0, y_range], kapa=threshold)
 
     print(f'''
-    Total number of features detected: {numFeatures}. If this is too many, consider increasing  
+    Total number of features detected: {numFeatures} (cutoff brightness = {threshold}). If this is too many, consider increasing  
     the threshold input.
     ''')
 
     # Loop over features and ask the user if a feature is of interest to be saved
-    keepFeature = False
-
-    xy_FeatureCount = 0   # number of already-saved feature coordinates initialized to zero
-    binFeatureCount = 0   # number of already-saves feature images in binary format initialized to zero
-    imgFeatureCount = 0   # number of already-saves feature images in .png format initialized to zero
-
-    xy_RefusedCount = 0   # number of already-saved refused coordinates initialized to zero
-    binRefusedCount = 0   # number of already-saves refused images in binary format initialized to zero
-    imgRefusedCount = 0   # number of already-saves refused images in .png format initialized to zero  
-
-    for files in os.listdir('./data/features'):
-        if files.endswith('.png'):
-            imgFeatureCount += 1
-
-    for files in os.listdir('./data/features/pixels'):
-        if files.endswith('.npy'):
-            binFeatureCount += 1
-
-    for files in os.listdir('./data/features/coordinates'):
-        if files.endswith('.npy'):
-            xy_FeatureCount += 1
-
-
-    for files in os.listdir('./data/refuse'):
-        if files.endswith('.png'):
-            imgRefusedCount += 1
-
-    for files in os.listdir('./data/refuse/pixels'):
-        if files.endswith('.npy'):
-            binRefusedCount += 1
-
-    for files in os.listdir('./data/refuse/coordinates'):
-        if files.endswith('.npy'):
-            xy_RefusedCount += 1    
             
     selectedFeatures = 0  # counter
     refusedFeatures = 0  # counter
-    
     
     # TODO: add a feature to use matplotlib.ginput
     if numFeatures > 0:

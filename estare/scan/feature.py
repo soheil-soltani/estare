@@ -3,9 +3,8 @@ import numpy as np
 from skimage import img_as_float as imfloat
 from copy import copy
 
-# TODO: see this for sub-classing np arrays to add metadata
-# https://stackoverflow.com/questions/34967273/add-metadata-comment-to-numpy-ndarray
-# TODO: unit-testing
+
+# TODO: Add unit-test
 
 
 def extract(image, xRng=[0, 1], yRng=[0, 1], kapa=1.0):
