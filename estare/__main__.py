@@ -45,6 +45,9 @@ parse_stack.set_defaults(func=assemble)
 args = parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = parser.parse_args()
     args.func(args)   # call the default function
+
+if __name__ == '__main__':
+    main()
