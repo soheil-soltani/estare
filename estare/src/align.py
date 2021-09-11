@@ -4,8 +4,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from estare.src.init import examine
-from estare.src.rotate import rotate
+from estare.src.rotate import rotate, rotate_vectorized
 from estare.src.stack import stack
+
 # +++++++++++++
 # For profiling
 import time
@@ -138,8 +139,8 @@ def align(image_1, image_2, pivot_1, pivot_2, save=False):
     x_array, y_array = detrans(x_array, y_array, x_range_1, y_range_1, del_x, del_y)
 
     t_2 = time.time()
-    # and now we can derotate them 
-    stack(img_1, img_2, x_range_1, y_range_1, del_x, del_y, theta, discrete=True)
+    # and now we can derotate them using the vectorized version:
+    stack(img_1, img_2, x_array, y_array, x_range_1, y_range_1, theta, discrete=True)
     t_3 = time.time()
     
     print('De-translation took %s sec.'%(t_2-t_1))
