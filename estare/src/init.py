@@ -8,13 +8,6 @@ import os
 def examine(imagePath, verbose=False, graphics=False):
     image = imfloat(io.imread(imagePath))
 
-    if verbose:
-        np.set_printoptions(precision=2, linewidth=155)
-        
-        print('Image type: ', type(image))
-        print('Image datatype: ', image.dtype)
-        print('Image shape: ', image.shape)
-
     if graphics:
         gridShow = False
         fig, ax1 = plt.subplots(1, 1)
@@ -29,6 +22,15 @@ def examine(imagePath, verbose=False, graphics=False):
     x_max = image.shape[0]
     y_max = image.shape[1]
 
+    if verbose:
+        np.set_printoptions(precision=2, linewidth=155)
+        
+        print('Image type: ', type(image))
+        print('Image datatype: ', image.dtype)
+        print('Image shape: ', image.shape)
+        print(f'Image has x-range = {x_max}, and y-range = {y_max}')
+
+        
     return image, x_max, y_max
 
 

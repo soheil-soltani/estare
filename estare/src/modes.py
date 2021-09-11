@@ -36,15 +36,18 @@ def scan(args):
     
     # handle input arguments
     imagePath = args.image
-            
-    img_as_array, x_range, y_range = examine(imagePath, verbose=False, graphics=False)
+    info_only = args.info_only   # just check image properties and skip feature detection
+
+    if (info_only):
+        img_as_array, x_range, y_range = examine(imagePath, verbose=True, graphics=False)
+        return 
+    else:
+        img_as_array, x_range, y_range = examine(imagePath, verbose=False, graphics=False)
     # Replace with:
     # img_as_array = FloatImage(imagePath)
     # img_as_array.print_info()
     # img_as_array.save()
     # x_range, y_range = img_as_array.size()
-    
-    print(f'Image has x-range = {x_range}, and y-range = {y_range}')
 
     imgGray = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
     # Replace with (makes FloatImage redundant):

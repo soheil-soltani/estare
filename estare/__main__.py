@@ -26,6 +26,11 @@ for picking pixels of a certain brightness. It takes a floating point values fro
 a larger value to limit the detected features to those of a higher brightness. If not provided, the 
 threshold will be computed automatically.''')
 
+parse_feature.add_argument('-i', '--info-only', action='store_true', \
+                           help='''If specified, the properties of the 
+                           input image will be printed to stdout, and the 
+                           feature detection step will be skipped.''' )
+
 parse_feature.set_defaults(func=scan)
 
 parse_stack = sub_parsers.add_parser('stack', help='''This mode should normally be used after running 
