@@ -35,24 +35,30 @@ def scan(args):
     """
     
     # handle input arguments
-    imagePath = args.image
+    image1_path = args.img1
+    image2_path = args.img2
+    
     info_only = args.info_only   # just check image properties and skip feature detection
     save_pixs = args.save_pxs    # save also the pixel values
     save_gifs = args.save_gif    # save the features as PNG too
     
-    if (info_only):
-        img_as_array, x_range, y_range = examine(imagePath, verbose=True, graphics=False)
+    if (info_only):   #TODO: this feature should have a separate argument subparser
+        img_as_array, x_range, y_range = examine(image1_path, verbose=True, graphics=False)
+        img_as_array, x_range, y_range = examine(image2_path, verbose=True, graphics=False)
         return 
     else:
         setup()   # setup the program directory structure
-        img_as_array, x_range, y_range = examine(imagePath, verbose=False, graphics=False)
+        img1_as_array, x_range, y_range = examine(image1_path, verbose=False, graphics=False)
+        img2_as_array, x_range, y_range = examine(image2_path, verbose=False, graphics=False)
     # Replace with:
     # img_as_array = FloatImage(imagePath)
     # img_as_array.print_info()
     # img_as_array.save()
     # x_range, y_range = img_as_array.size()
 
-    imgGray = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
+    img1_gray = img1_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
+    img2_gray = img2_as_array @ [0.2126, 0.7152, 0.0722]  
+        
     # Replace with (makes FloatImage redundant):
     # imgGray = GrayImage(imagePath)
     # imgGray.print_info()
@@ -60,8 +66,8 @@ def scan(args):
     # x_range, y_range = imgGray.size()
 
     fig2, (frame1,frame2) = plt.subplots(1, 2)
-    image_features = frame1.imshow(imgGray, cmap='gray')
-    image_features = frame2.imshow(imgGray, cmap='gray')
+    image_features = frame1.imshow(img1_gray, cmap='gray')
+    image_features = frame2.imshow(img2_gray, cmap='gray')
     selection_guide = '''Please first select two features from the left panel via left-click, and then pick their 
     counterparts (in the same order) from the right panel. Right-click to drop the latest selection. To interrupt 
     feature selection, use the middle mouse button.'''

@@ -19,12 +19,11 @@ sub_parsers = parser.add_subparsers()
 parse_feature = sub_parsers.add_parser('scan', help='''Scan an input image to find suitable features 
 such as (a) bright star(s) that can be used for aligning multiple frames.''')
 
-parse_feature.add_argument('image', action='store', type=str,  help='The input image to be scanned.')
+parse_feature.add_argument('--img1', action='store', type=str, required=True, \
+                           help='Path and name of the reference image (base layer)')
 
-parse_feature.add_argument('-k', '--kapa',  action='store', default=None, type=float, help='''Threshold 
-for picking pixels of a certain brightness. It takes a floating point values from the range [0, 1]. Pick 
-a larger value to limit the detected features to those of a higher brightness. If not provided, the 
-threshold will be computed automatically.''')
+parse_feature.add_argument('--img2', action='store', type=str, required=True, \
+                           help='Path and name of the second image (top layer)')
 
 parse_feature.add_argument('-i', '--info-only', action='store_true', \
                            help='''If specified, the properties of the 
