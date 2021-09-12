@@ -37,11 +37,14 @@ def scan(args):
     # handle input arguments
     imagePath = args.image
     info_only = args.info_only   # just check image properties and skip feature detection
-
+    save_pixs = args.save_pxs    # save also the pixel values
+    save_gifs = args.save_gif    # save the features as PNG too
+    
     if (info_only):
         img_as_array, x_range, y_range = examine(imagePath, verbose=True, graphics=False)
         return 
     else:
+        setup()   # setup the program directory structure
         img_as_array, x_range, y_range = examine(imagePath, verbose=False, graphics=False)
     # Replace with:
     # img_as_array = FloatImage(imagePath)
@@ -59,7 +62,7 @@ def scan(args):
     fig2, frame = plt.subplots(1, 1)
     image_features = frame.imshow(imgGray, cmap='gray')
     frame.set_title('Marked features', fontsize=14)
-
+    #TODO: Parse threshold in the beginning of the function
     if args.kapa != None:
         threshold = args.kapa
     else:
@@ -70,15 +73,16 @@ def scan(args):
     # Replace with:
     # numFeatures, indices, markers = imgGray.extract(xRng=[0, x_range], yRng=[0, y_range], kapa=threshold)
 
-    print(f'''
-    Total number of features detected: {numFeatures} (cutoff brightness = {threshold}). If this is too many, consider increasing  
-    the threshold input.
-    ''')
+    print(f'''Total number of features detected: {numFeatures} (cutoff brightness = {threshold}). 
+              If this is too many, consider increasing the threshold input.''')
 
-    # Loop over features and ask the user if a feature is of interest to be saved
-            
+    # Loop over features and ask the user if a feature is of interest to be saved            
     selectedFeatures = 0  # counter
-    refusedFeatures = 0  # counter
+    refusedFeatures  = 0  # counter
+
+    xy_FeatureCount = 0   # number of already-saved feature coordinates initialized to zero
+    binFeatureCount = 0   # number of already-saves feature images in binary format initialized to zero
+    imgFeatureCount = 0   # number of already-saves feature images in .png format initialized to zero
     
     # TODO: add a feature to use matplotlib.ginput
     if numFeatures > 0:
@@ -91,22 +95,19 @@ def scan(args):
                 btnpress = plt.waitforbuttonpress(-1)
                 if btnpress:
                     selectedFeatures += 1
-                    np.save('./data/features/coordinates/feature_{}'.format(xy_FeatureCount), [pair_0, pair_1])
+                    np.save('./estare_data/features/coordinates/feature_{}'.format(xy_FeatureCount), [pair_0, pair_1])
                     xy_FeatureCount += 1
-                    np.save('./data/features/pixels/feature_{}_pixels'.format(binFeatureCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    binFeatureCount += 1
-                    imsave('./data/features/feature_{}_pixels.png'.format(imgFeatureCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    imgFeatureCount += 1
-                    # TODO: Find install path and cd to data
+                    if save_pixs:
+                        np.save('./estare_data/features/pixels/feature_{}_pixels'.format(binFeatureCount), \
+                                imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
+                        binFeatureCount += 1
+                    if save_gifs:
+                        imsave('./estare_data/features/feature_{}.png'.format(imgFeatureCount), \
+                               imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
+                        imgFeatureCount += 1
+                        
                     plt.waitforbuttonpress(0.1)
-                else:
-                    refusedFeatures += 1
-                    np.save('./data/refuse/coordinates/refused_{}'.format(xy_RefusedCount), [pair_0, pair_1])
-                    xy_RefusedCount += 1
-                    np.save('./data/refuse/pixels/refused_{}_pixels'.format(binRefusedCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    binRefusedCount += 1
-                    imsave('./data/refuse/refused_{}_pixels.png'.format(imgRefusedCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    imgRefusedCount += 1
+
                 arrow.remove()   # removing the arrow must be the last thing to do at the end of the if-block
                 
     print('Feature detection completed.')
