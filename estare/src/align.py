@@ -117,7 +117,8 @@ def derotate(x_array, y_array, theta, roundup=False):
 
                 
 def align(image_1, image_2, pivot_1, pivot_2, save=False):
-  
+    print('Working... this can take several minutes')
+    #TODO: remove the save option. You always wanna save the result!
     img_1, x_range_1, y_range_1 = examine(image_1)  
     img_2, x_range_2, y_range_2 = examine(image_2)
 
@@ -142,13 +143,13 @@ def align(image_1, image_2, pivot_1, pivot_2, save=False):
     # and now we can derotate them using the vectorized version:
     stack(img_1, img_2, x_array, y_array, x_range_1, y_range_1, theta, discrete=True)
     t_3 = time.time()
-    
-    print('De-translation took %s sec.'%(t_2-t_1))
-    print('Stacking took %s sec.'%(t_3-t_2))
-    print('Done')
+    #TODO: configure profiling run separately from production
+    #print('De-translation took %s sec.'%(t_2-t_1))
+    #print('Stacking took %s sec.'%(t_3-t_2))    
 
     if save:
-        io.imsave('./data/estare_stacked_testAlign.jpg', img_1)
+        io.imsave('./estare_data/stacked_images/estare_stacked_result.jpg', img_1)
+        print('Finished. The result is saved as estare_stacked_result.jpg under ./estare_data/stacked_images/')
     
     return img_1
     
