@@ -59,59 +59,30 @@ def scan(args):
     # imgGray.save()
     # x_range, y_range = imgGray.size()
 
-    fig2, frame = plt.subplots(1, 1)
-    image_features = frame.imshow(imgGray, cmap='gray')
-    frame.set_title('Marked features', fontsize=14)
-    #TODO: Parse threshold in the beginning of the function
-    if args.kapa != None:
-        threshold = args.kapa
-    else:
-        threshold = cutoff.find_threshold(imgGray, x_range, y_range)
-        
-    numFeatures, indices, markers = feature.extract(imgGray, xRng=[0, x_range], yRng=[0, y_range],
-                                            kapa=threshold)
-    # Replace with:
-    # numFeatures, indices, markers = imgGray.extract(xRng=[0, x_range], yRng=[0, y_range], kapa=threshold)
-
-    print(f'''Total number of features detected: {numFeatures} (cutoff brightness = {threshold}). 
-              If this is too many, consider increasing the threshold input.''')
-
-    # Loop over features and ask the user if a feature is of interest to be saved            
-    selectedFeatures = 0  # counter
-    refusedFeatures  = 0  # counter
-
-    xy_FeatureCount = 0   # number of already-saved feature coordinates initialized to zero
-    binFeatureCount = 0   # number of already-saves feature images in binary format initialized to zero
-    imgFeatureCount = 0   # number of already-saves feature images in .png format initialized to zero
+    fig2, (frame1,frame2) = plt.subplots(1, 2)
+    image_features = frame1.imshow(imgGray, cmap='gray')
+    image_features = frame2.imshow(imgGray, cmap='gray')
+    selection_guide = '''Please first select two features from the left panel via left-click, and then pick their 
+    counterparts (in the same order) from the right panel. Right-click to drop the latest selection. To interrupt 
+    feature selection, use the middle mouse button.'''
+    selection_warning='''Warning: zooming in can increase the accuracy of selection, but by doing this an 
+    unwanted feature may be picked due to the mouse click action. In this case, right-click immediately after 
+    zooming in to remove the unwanted selection.'''
     
-    # TODO: add a feature to use matplotlib.ginput
-    if numFeatures > 0:
-        print('''A detected feature is displayed by a black square. Press any key to save the current feature, or click 
-        the mouse to discard it...''')
-        for pair_0, pair_1 in zip(indices[0], indices[1]):
-            if pair_0 > 3 and pair_1 > 3:
-                arrow = frame.annotate('O', xy=(pair_1, pair_0), arrowprops=dict(color='lime',arrowstyle='->'))
-                plt.draw()  # , plt.pause(0.01)
-                btnpress = plt.waitforbuttonpress(-1)
-                if btnpress:
-                    selectedFeatures += 1
-                    np.save('./estare_data/features/coordinates/feature_{}'.format(xy_FeatureCount), [pair_0, pair_1])
-                    xy_FeatureCount += 1
-                    if save_pixs:
-                        np.save('./estare_data/features/pixels/feature_{}_pixels'.format(binFeatureCount), \
-                                imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                        binFeatureCount += 1
-                    if save_gifs:
-                        imsave('./estare_data/features/feature_{}.png'.format(imgFeatureCount), \
-                               imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                        imgFeatureCount += 1
-                        
-                    plt.waitforbuttonpress(0.1)
+    frame1.set_title(selection_guide)    
+    frame2.set_title(selection_warning)
+    
+    plt.waitforbuttonpress(-1)
+    coordinates = plt.ginput(n=4, timeout=-1, show_clicks=True)
+    if len(coordinates) != 4:
+        print('Feature detection incomplete. Please retry.')
+    else:
+        pivot_1 = [coordinates[0], coordinates[1]]
+        pivot_2 = [coordinates[2], coordinates[3]]
+        np.save('./estare_data/features/coordinates/pivot_1.npy', pivot_1)
+        np.save('./estare_data/features/coordinates/pivot_2.npy', pivot_2)
+        print('Feature detection completed.')
 
-                arrow.remove()   # removing the arrow must be the last thing to do at the end of the if-block
-                
-    print('Feature detection completed.')
-    plt.show()
 
 
 def assemble(args):
