@@ -12,9 +12,6 @@ from estare.src.init import examine, setup
 from matplotlib import pyplot as plt
 from skimage.io import imsave
 
-import estare.scan.cutoff as cutoff 
-import estare.scan.feature as  feature
-
 import os
 import numpy as np
 
