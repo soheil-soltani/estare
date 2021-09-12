@@ -37,10 +37,10 @@ def examine(imagePath, verbose=False, graphics=False):
 def setup():
     # prepare the data directory structure for the program
     try:       
-        os.makedirs('./estare_data/features/coordinates')
-        os.makedirs('./estare_data/features/pixels')
+        os.makedirs('./estare_data/features/coordinates', exist_ok=True)
+        os.makedirs('./estare_data/features/pixels', exist_ok=True)
 
-        os.makedirs('./estare_data/stacked_images')
+        os.makedirs('./estare_data/stacked_images', exist_ok=True)
     except OSError:
         print('Failed to create data directories. This may be due to the lack of write permission.')
             
