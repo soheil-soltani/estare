@@ -36,7 +36,7 @@ If estare is installed using the `pip` distribution, you can run it from the com
 
 `estare stack ...` 
 
-On the other hand, if it is downloaded as a package, it needs to be extracted first. Afterwards, you can run it like a package: \
+On the other hand, if it is downloaded as a package, it needs to be extracted first. Afterwards, you can run it like a package: 
 
 `python -m estare scan ...` or 
 
