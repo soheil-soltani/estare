@@ -11,7 +11,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="estare", 
-    version="0.1.1",
+    version="1.0.0",
     author="Soheil Soltani",    
     description="Package for image alignment and stacking which can be used from the linux command-line",
     long_description=long_description,

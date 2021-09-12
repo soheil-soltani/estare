@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from skimage.io import imsave, imread
-
+import os
 from estare.src import align
 
 
@@ -12,15 +12,14 @@ class TestAlign(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         from tests.reference_markers import reference_markers
-        
+        os.makedirs('./tests/test_results', exist_ok=True)
         targets, markers = reference_markers()
         np.save('./tests/test_images/pivot.npy', targets)
         np.save('./tests/test_images/target.npy', markers)
 
 
     @classmethod
-    def tearDownClass(self):
-        import os
+    def tearDownClass(self):        
 
         for garbage_file in os.listdir('./tests/test_images'):
             os.remove(f'./tests/test_images/{garbage_file}')

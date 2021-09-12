@@ -5,15 +5,8 @@ from skimage import img_as_float as imfloat
 import os
 
 
-def examine(imagePath, save=False, verbose=False, graphics=False):
+def examine(imagePath, verbose=False, graphics=False):
     image = imfloat(io.imread(imagePath))
-
-    if verbose:
-        np.set_printoptions(precision=2, linewidth=155)
-        
-        print('Image type: ', type(image))
-        print('Image datatype: ', image.dtype)
-        print('Image shape: ', image.shape)
 
     if graphics:
         gridShow = False
@@ -25,31 +18,29 @@ def examine(imagePath, save=False, verbose=False, graphics=False):
         ax1.grid(gridShow)
         plt.show()
 
-    # save the image
-    if save:
-        work_dir = os.getcwd()   # Current working directory
-        np.save(f'{work_dir}/data/input_image', image)   # TODO:data/ should be created by init.setup() needs test?
-
     # return the x, and y ranges
     x_max = image.shape[0]
     y_max = image.shape[1]
 
+    if verbose:
+        np.set_printoptions(precision=2, linewidth=155)
+        
+        print('Image type: ', type(image))
+        print('Image datatype: ', image.dtype)
+        print('Image shape: ', image.shape)
+        print(f'Image has x-range = {x_max}, and y-range = {y_max}')
+
+        
     return image, x_max, y_max
 
 
 def setup():
     # prepare the data directory structure for the program
-    try:
-        #TODO: for more clarity, name the base dir. estare_data instead of just data
-        os.mkdir('./data')
-        os.mkdir('./data/features')
-        os.mkdir('./data/refuse')
-        
-        os.mkdir('./data/features/coordinates')
-        os.mkdir('./data/features/pixels')
+    try:       
+        os.makedirs('./estare_data/features/coordinates', exist_ok=True)
+        os.makedirs('./estare_data/features/pixels', exist_ok=True)
 
-        os.mkdir('./data/refuse/coordinates')        
-        os.mkdir('./data/refuse/pixels')                
+        os.makedirs('./estare_data/stacked_images', exist_ok=True)
     except OSError:
         print('Failed to create data directories. This may be due to the lack of write permission.')
             

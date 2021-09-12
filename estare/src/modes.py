@@ -12,9 +12,6 @@ from estare.src.init import examine, setup
 from matplotlib import pyplot as plt
 from skimage.io import imsave
 
-import estare.scan.cutoff as cutoff 
-import estare.scan.feature as  feature
-
 import os
 import numpy as np
 
@@ -35,79 +32,60 @@ def scan(args):
     """
     
     # handle input arguments
-    imagePath = args.image
-            
-    img_as_array, x_range, y_range = examine(imagePath, save=True, verbose=False, graphics=False)
+    image1_path = args.img1
+    image2_path = args.img2
+    
+    info_only = args.info_only   # just check image properties and skip feature detection
+    save_pixs = args.save_pxs    # save also the pixel values
+    save_gifs = args.save_gif    # save the features as PNG too
+    
+    if (info_only):   #TODO: this feature should have a separate argument subparser
+        img_as_array, x_range, y_range = examine(image1_path, verbose=True, graphics=False)
+        img_as_array, x_range, y_range = examine(image2_path, verbose=True, graphics=False)
+        return 
+    else:
+        setup()   # setup the program directory structure
+        img1_as_array, x_range, y_range = examine(image1_path, verbose=False, graphics=False)
+        img2_as_array, x_range, y_range = examine(image2_path, verbose=False, graphics=False)
     # Replace with:
     # img_as_array = FloatImage(imagePath)
     # img_as_array.print_info()
     # img_as_array.save()
     # x_range, y_range = img_as_array.size()
-    
-    print(f'Image has x-range = {x_range}, and y-range = {y_range}')
 
-    imgGray = img_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
+    img1_gray = img1_as_array @ [0.2126, 0.7152, 0.0722]  # image in grayscale
+    img2_gray = img2_as_array @ [0.2126, 0.7152, 0.0722]  
+        
     # Replace with (makes FloatImage redundant):
     # imgGray = GrayImage(imagePath)
     # imgGray.print_info()
     # imgGray.save()
     # x_range, y_range = imgGray.size()
 
-    fig2, frame = plt.subplots(1, 1)
-    image_features = frame.imshow(imgGray, cmap='gray')
-    frame.set_title('Marked features', fontsize=14)
-
-    if args.kapa != None:
-        threshold = args.kapa
-    else:
-        threshold = cutoff.find_threshold(imgGray, x_range, y_range)
-        
-    numFeatures, indices, markers = feature.extract(imgGray, xRng=[0, x_range], yRng=[0, y_range],
-                                            kapa=threshold)
-    # Replace with:
-    # numFeatures, indices, markers = imgGray.extract(xRng=[0, x_range], yRng=[0, y_range], kapa=threshold)
-
-    print(f'''
-    Total number of features detected: {numFeatures} (cutoff brightness = {threshold}). If this is too many, consider increasing  
-    the threshold input.
-    ''')
-
-    # Loop over features and ask the user if a feature is of interest to be saved
-            
-    selectedFeatures = 0  # counter
-    refusedFeatures = 0  # counter
+    fig2, (frame1,frame2) = plt.subplots(1, 2)
+    image_features = frame1.imshow(img1_gray, cmap='gray')
+    image_features = frame2.imshow(img2_gray, cmap='gray')
+    selection_guide = '''Please first select two features from the left panel via left-click, and then pick their 
+    counterparts (in the same order) from the right panel. Right-click to drop the latest selection. To interrupt 
+    feature selection, use the middle mouse button.'''
+    selection_warning='''Warning: zooming in can increase the accuracy of selection, but by doing this an 
+    unwanted feature may be picked due to the mouse click action. In this case, right-click immediately after 
+    zooming in to remove the unwanted selection.'''
     
-    # TODO: add a feature to use matplotlib.ginput
-    if numFeatures > 0:
-        print('''A detected feature is displayed by a black square. Press any key to save the current feature, or click 
-        the mouse to discard it...''')
-        for pair_0, pair_1 in zip(indices[0], indices[1]):
-            if pair_0 > 3 and pair_1 > 3:
-                arrow = frame.annotate('O', xy=(pair_1, pair_0), arrowprops=dict(color='lime',arrowstyle='->'))
-                plt.draw()  # , plt.pause(0.01)
-                btnpress = plt.waitforbuttonpress(-1)
-                if btnpress:
-                    selectedFeatures += 1
-                    np.save('./data/features/coordinates/feature_{}'.format(xy_FeatureCount), [pair_0, pair_1])
-                    xy_FeatureCount += 1
-                    np.save('./data/features/pixels/feature_{}_pixels'.format(binFeatureCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    binFeatureCount += 1
-                    imsave('./data/features/feature_{}_pixels.png'.format(imgFeatureCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    imgFeatureCount += 1
-                    # TODO: Find install path and cd to data
-                    plt.waitforbuttonpress(0.1)
-                else:
-                    refusedFeatures += 1
-                    np.save('./data/refuse/coordinates/refused_{}'.format(xy_RefusedCount), [pair_0, pair_1])
-                    xy_RefusedCount += 1
-                    np.save('./data/refuse/pixels/refused_{}_pixels'.format(binRefusedCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    binRefusedCount += 1
-                    imsave('./data/refuse/refused_{}_pixels.png'.format(imgRefusedCount), imgGray[pair_0-10:pair_0+10, pair_1-10:pair_1+10])
-                    imgRefusedCount += 1
-                arrow.remove()   # removing the arrow must be the last thing to do at the end of the if-block
-                
-    print('Feature detection completed.')
-    plt.show()
+    frame1.set_title(selection_guide)    
+    frame2.set_title(selection_warning)
+    
+    plt.waitforbuttonpress(-1)
+    coordinates = plt.ginput(n=4, timeout=-1, show_clicks=True)
+    if len(coordinates) != 4:
+        print('Feature detection incomplete. Please retry.')
+    else:
+        pivot_1 = [coordinates[0], coordinates[1]]
+        pivot_2 = [coordinates[2], coordinates[3]]
+        np.save('./estare_data/features/coordinates/pivot_1.npy', pivot_1)
+        np.save('./estare_data/features/coordinates/pivot_2.npy', pivot_2)
+        print('Feature detection completed.')
+
 
 
 def assemble(args):
