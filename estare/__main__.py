@@ -31,6 +31,11 @@ parse_feature.add_argument('-i', '--info-only', action='store_true', \
                            input image will be printed to stdout, and the 
                            feature detection step will be skipped.''' )
 
+parse_feature.add_argument('--save-pxs', '-x', action='store_true', help='''If set, the pixel values of the 
+                                                                            feature(s) will be saved.''')
+parse_feature.add_argument('--save-gif', '-g', action='store_true', help='''If set, the feature(s) will be 
+                                                                            saved also in .png format.''')
+
 parse_feature.set_defaults(func=scan)
 
 parse_stack = sub_parsers.add_parser('stack', help='''This mode should normally be used after running 
