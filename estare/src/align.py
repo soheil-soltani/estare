@@ -62,14 +62,12 @@ def detrans_scalar(x_array, y_array, x_range, y_range, del_x, del_y):
 
 def find_offset(pivot_1, pivot_2):
     # two reference points for alignment
-    coord_1 = np.load(pivot_1)
-    a_1 = coord_1[0]
-    b_1 = coord_1[1]
+    a_1 = pivot_1[0]
+    b_1 = pivot_1[1]
     
-    # two target points that should match the reference points after alignment
-    coord_2 = np.load(pivot_2)  
-    a_2 = coord_2[0]
-    b_2 = coord_2[1]
+    # two target points that should match the reference points after alignment    
+    a_2 = pivot_2[0]
+    b_2 = pivot_2[1]
 
     # Use the two points to back calculate the angle of rotation
     slope_bef = ( b_1[1] - a_1[1] )/( b_1[0] - a_1[0] )

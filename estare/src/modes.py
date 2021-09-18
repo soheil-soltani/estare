@@ -103,8 +103,8 @@ def assemble(args):
     # unpack the arguments
     img_1 = args.layer_1
     img_2 = args.layer_2
-    pivot_1 = args.feature_1
-    pivot_2 = args.feature_2
+    pivot_1 = np.load(args.feature_1)
+    pivot_2 = np.load(args.feature_2)
 
     # align and stack the two input frames
     stacked_frame = align(img_1, img_2, pivot_1, pivot_2, save=True)
