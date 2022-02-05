@@ -43,10 +43,16 @@ def arc(position, origo=np.array([0., 0.]), radians=False):
     # in fact division by rho = 0 should raise error
     position_norm = np.sqrt((position[0]-origo[0])**2 + (position[1]-origo[1])**2)
     # computing norm via np.linalg.norm(position) is much slower
+    angle_radian = np.arccos( (position[0]-origo[0]) / position_norm )
+    offset = 0
+    if position[1] < 0:
+        offset = 2.0*(np.pi - angle_radian)
+    angle_radian += offset
+        
     if radians==False:
-        return position_norm, 180.0 * (np.arccos( (position[0]-origo[0]) / position_norm )) / np.pi
+        return position_norm, angle_radian*180.0 / np.pi
     else:
-        return position_norm, np.arccos( (position[0]-origo[0]) / position_norm )
+        return position_norm, angle_radian
 
     
 #@profile

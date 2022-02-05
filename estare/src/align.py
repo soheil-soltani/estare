@@ -75,21 +75,16 @@ def find_offset(pivot_1, pivot_2):
     slope_aft = ( b_2[1] - a_2[1] )/( b_2[0] - a_2[0] )
 
     deflection = ( ((np.arctan(slope_aft))*180/np.pi) -
-              ( (np.arctan(slope_bef))*180/np.pi ) )
+                   ((np.arctan(slope_bef))*180/np.pi) )
 
-    a2_derot = rotate(a_2, -deflection, discrete=False)   # set discrete=False to get an exact value
+    a2_derot = rotate(a_2, -deflection, discrete=False)   # discrete=False to get an exact value
 
     # compare the derotated one from its origin to calculate the relative translation magnitude 
-    dxp = a2_derot[0] - a_1[0]
-    dyp = a2_derot[1] - a_1[1]
+    del_x = a2_derot[0] - a_1[0]
+    del_y = a2_derot[1] - a_1[1]
 
-    # Using the formulae, compute the absolute translation magnitude
+    #OBS! why -deflection? must be a mistake 
     deflection_rad = -deflection * np.pi / 180   # radians
-
-    del_y = ( dyp - dxp*np.tan(deflection_rad) ) / \
-            (np.sin(deflection_rad)*np.tan(deflection_rad) + np.cos(deflection_rad))
-
-    del_x = (dxp + del_y*np.sin(deflection_rad)) / np.cos(deflection_rad)
 
 
     return del_x, del_y, deflection, deflection_rad
@@ -122,7 +117,6 @@ def align(image_1, image_2, pivot_1, pivot_2, save=False):
 
     # if (x_range_1 != x_range_2) or (y_range_1 != y_range_2):
     #     #TODO: raise error and exit
-
 
     # calculate offsets (del_x, del_y) and rotation angle theta
     del_x, del_y, theta, theta_rad = find_offset(pivot_1, pivot_2)
