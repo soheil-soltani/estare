@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from skimage import img_as_float as imfloat
 import os
+from pathlib import Path
 
 
 def examine(imagePath, verbose=False, graphics=False):
@@ -36,11 +37,15 @@ def examine(imagePath, verbose=False, graphics=False):
 
 def setup():
     # prepare the data directory structure for the program
+    home_dir = Path.home()
+    est_coords_dir = home_dir.joinpath('estare_data/features/coordinates')
+    est_pixels_dir = home_dir.joinpath('estare_data/features/pixels')
+    est_result_dir = home_dir.joinpath('estare_data/stacked_images')    
+    
     try:       
-        os.makedirs('./estare_data/features/coordinates', exist_ok=True)
-        os.makedirs('./estare_data/features/pixels', exist_ok=True)
-
-        os.makedirs('./estare_data/stacked_images', exist_ok=True)
+        os.makedirs(est_coords_dir, exist_ok=True) 
+        os.makedirs(est_pixels_dir, exist_ok=True) 
+        os.makedirs(est_result_dir, exist_ok=True) 
     except OSError:
         print('Failed to create data directories. This may be due to the lack of write permission.')
             

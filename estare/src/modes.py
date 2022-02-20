@@ -12,7 +12,7 @@ from estare.src.init import examine, setup
 from matplotlib import pyplot as plt
 from skimage.io import imsave
 
-import os
+from pathlib import Path
 import numpy as np
 
 
@@ -82,8 +82,11 @@ def scan(args):
     else:
         pivot_1 = [coordinates[0], coordinates[1]]
         pivot_2 = [coordinates[2], coordinates[3]]
-        np.save('./estare_data/features/coordinates/pivot_1.npy', pivot_1)
-        np.save('./estare_data/features/coordinates/pivot_2.npy', pivot_2)
+        piv1_dest = Path.home() / 'estare_data' / 'features' / 'coordinates' / 'pivot_1.npy'
+        piv2_dest = Path.home() / 'estare_data' / 'features' / 'coordinates' / 'pivot_2.npy'
+        
+        np.save(piv1_dest, pivot_1)
+        np.save(piv2_dest, pivot_2)
         print('Feature detection completed.')
 
 
@@ -103,9 +106,35 @@ def assemble(args):
     # unpack the arguments
     img_1 = args.layer_1
     img_2 = args.layer_2
-    pivot_1 = np.load(args.feature_1)
-    pivot_2 = np.load(args.feature_2)
+    skip_alignment = args.no_align
+    ###subtract_frame = args.subtract_frame
+    
+    if not skip_alignment:
+        piv1_dir = Path.home() / 'estare_data' / 'features' / 'coordinates' / 'pivot_1.npy'
+        piv2_dir = Path.home() / 'estare_data' / 'features' / 'coordinates' / 'pivot_2.npy'
+        
+        #pivot_1 = np.load(args.anchorb)
+        #pivot_2 = np.load(args.anchort)
+        pivot_1 = np.load(piv1_dir)
+        pivot_2 = np.load(piv2_dir)
+        # align and stack the two input frames
+        stacked_frame = align(img_1, img_2, pivot_1, pivot_2, save=True)
 
-    # align and stack the two input frames
-    stacked_frame = align(img_1, img_2, pivot_1, pivot_2, save=True)
+    else:
+        image_1, x_range_1, y_range_1 = examine(img_1)  
+        image_2, x_range_2, y_range_2 = examine(img_2)
+
+        # if subtract_frame is None:
+        image_1 += image_2
+        # else:
+        #     image_3, _, _ = examine(subtract_frame)
+        #     image_1 += (image_2 - image_3)
+            
+        #TODO: accept fraction as input image_1 *= 0.5
+
+        result_dest = Path.home() / 'estare_data' / 'stacked_images' / 'estare_overlay.jpeg'
+        imsave(result_dest, image_1)
+        
+    print('Done')
+
     

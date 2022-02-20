@@ -7,6 +7,8 @@ from estare.src.init import examine
 from estare.src.rotate import rotate, rotate_vectorized
 from estare.src.stack import stack
 
+from pathlib import Path
+
 # +++++++++++++
 # For profiling
 import time
@@ -140,8 +142,9 @@ def align(image_1, image_2, pivot_1, pivot_2, save=False):
     #print('Stacking took %s sec.'%(t_3-t_2))    
 
     if save:
-        io.imsave('./estare_data/stacked_images/estare_stacked_result.jpg', img_1)
-        print('Finished. The result is saved as estare_stacked_result.jpg under ./estare_data/stacked_images/')
+        result_dest = Path.home() / 'estare_data' / 'stacked_images' / 'estare_stacked_result.jpg'
+        io.imsave(result_dest, img_1)
+        print('Finished. The result is saved as estare_stacked_result.jpg under ~/estare_data/stacked_images')
     
     return img_1
     
