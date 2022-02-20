@@ -44,14 +44,21 @@ input images along with two identical features for each image are required.''')
 
 parse_stack.add_argument('layer_1', help='Path and name of the reference image (base layer)')
 parse_stack.add_argument('layer_2', help='Path and name of the second image (top layer)')
-parse_stack.add_argument('feature_1', help='''Path and name of a .npy file containing the coordinates 
-of the features in the reference layer''')
-parse_stack.add_argument('feature_2', help='''Path and name of a .npy file containing the coordinates 
-of the features in the second layer which will be lined up with the reference layer.''')
+
+parse_stack.add_argument('--no-align', '-n', action='store_true', help='''If set, image alignment before 
+                                                                          stacking will be skipped''')
+
 
 parse_stack.set_defaults(func=assemble)
 
-args = parser.parse_args()
+# # create a parser for preprocessing tasks
+# parse_edit = sub_parsers.add_parser('edit', help='''Pre-process images.''')
+
+# parse_edit.add_argument('--subtract-frame', action='store', type=str, help='''Path and name of the image 
+#                                                                            to be subtracted from  ''')
+# parse_edit.set_defaults(func=edit)
+
+# args = parser.parse_args()
 
 
 def main():
