@@ -40,11 +40,13 @@ def setup():
     home_dir = Path.home()
     est_coords_dir = home_dir.joinpath('estare_data/features/coordinates')
     est_pixels_dir = home_dir.joinpath('estare_data/features/pixels')
+    est_gif_dir    = home_dir.joinpath('estare_data/features/gifs')
     est_result_dir = home_dir.joinpath('estare_data/stacked_images')    
     
     try:       
         os.makedirs(est_coords_dir, exist_ok=True) 
         os.makedirs(est_pixels_dir, exist_ok=True) 
+        os.makedirs(est_gif_dir,    exist_ok=True)
         os.makedirs(est_result_dir, exist_ok=True) 
     except OSError:
         print('Failed to create data directories. This may be due to the lack of write permission.')

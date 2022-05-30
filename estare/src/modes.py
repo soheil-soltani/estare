@@ -11,6 +11,7 @@ from estare.src.init import examine, setup
 
 from matplotlib import pyplot as plt
 from skimage.io import imsave
+from skimage.util import img_as_ubyte, img_as_uint
 
 from pathlib import Path
 import numpy as np
@@ -88,6 +89,22 @@ def scan(args):
         np.save(piv1_dest, pivot_1)
         np.save(piv2_dest, pivot_2)
         print('Feature detection completed.')
+        if (save_gifs):
+            feat_array = np.zeros((7,7))
+            feat_gif_dir = Path.home() / 'estare_data' / 'features' / 'gifs'
+            num_files = 0
+            for child in feat_gif_dir.iterdir():
+                num_files += 1
+            print(f'Found {num_files} files.')
+            suffix = num_files
+            for feat_cnt in range(4):
+                feat_gif_dest = feat_gif_dir / f'feat_{suffix}.png'
+                y_center = int(coordinates[feat_cnt][0])
+                x_center = int(coordinates[feat_cnt][1])
+                feat_array[:, :] = img1_gray[int(x_center)-3:int(x_center)+4, int(y_center)-3:int(y_center)+4]
+                feat_hires = img_as_uint(feat_array)
+                imsave(feat_gif_dest, feat_hires)
+                suffix += 1                
 
 
 
